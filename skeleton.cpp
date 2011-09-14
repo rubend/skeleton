@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <RcppArmadillo.h>
-#include <Rcpp.h>
+//#include <Rcpp.h>
 #include <vector.h>
 
 /**
@@ -27,24 +27,26 @@
 
 using namespace Rcpp;
 
-RcppExport SEXP main(SEXP a,SEXP p,)
+RcppExport SEXP main(SEXP a)
 {
-  //transform the input to right values we need
-  //how I think the code works
-  LogicalMatrix G(p,p);
-  //POSOPT: only triangular matrix?
-  G.fill(TRUE);
-
-  IntegerVector seq_p = seq_ln(p)
-
+  // now this main is just used for testing the other functions
+  int i = 1,j = 2;
+  NumericMatrix Corr(a);
+  
+  std::vector<int> k(4);
+  k.push_back(5);
+  k.push_back(7);
+  k.push_back(8);
+  k.push_back(10);
+  
+  double r = pcorOrder(i,j,k,Corr);
   
   
-  
-  return a;
+  return wrap(r);
 }
 
 /**
- *This functino calculates partial correlation of i and j given the set k
+ *This function calculates partial correlation of i and j given the set k
  * C is the correlation matrix among nodes
  */
 double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
@@ -61,10 +63,12 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       r = (Corr(i,j)-Corr(i,k)*Corr(j,k))/sqrt((1-pow(Corr(j,k),2))*(1-Corr(i,k)^2));
     } else
     {
-      k.push_front(j);
-      k.push_front(i);
-      NumericMatrix sub = C(k,k);
-      x
+      // push_front only works on integervector of rcpp library, 
+      // maybe better to use stl vectors
+      //k.push_front(j);
+      //k.push_front(i);
+      //NumericMatrix sub = C(k,k);
+      
       int m=Corr.nrow(),n=Corr.ncol();
       arma::mat C(Corr.begin(),m,n,false);//reuses memory and avoids extra copy
       //need an efficient way to get the submatrix off of this. Problem is that i j k not 
