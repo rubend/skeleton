@@ -1,8 +1,8 @@
 #include <iostream>
-#include <math.h>
-#include <RcppArmadillo.h>
+#include <algorithm>
 //#include <Rcpp.h>
-#include <vector.h>
+#include <vector>
+#include <submat.h>
 
 /**
  *Copyright (C) 2011  Ruben Dezeure
@@ -23,8 +23,7 @@
  *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  **/
 
-
-
+using namespace std;
 using namespace Rcpp;
 
 RcppExport SEXP main(SEXP a)
@@ -58,10 +57,19 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
     {
       r = Corr(i,j);
       
-    } else if(k.size() ==1)
+    } 
+  /**
+   //optimization for the case k.size() ==1 
+    else if(k.size() ==1)
     {
+      //no match for call to Rcpp::NumericMatrix with (int,vector<int>)
+      
+      //use vector product calls and power taking and so on ...
+      //maybe use armadillo for this?
+      
       r = (Corr(i,j)-Corr(i,k)*Corr(j,k))/sqrt((1-pow(Corr(j,k),2))*(1-Corr(i,k)^2));
-    } else
+      }*/ 
+  else
     {
       // push_front only works on integervector of rcpp library, 
       // maybe better to use stl vectors
@@ -79,7 +87,7 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       std::vector<int> rows(k.size()+2);
       rows.push_back(i);
       rows.push_back(j);
-      vector<int>::iterator row;
+      std::vector<int>::iterator row;
  
       for (row = k.begin(); row !=k.end();++row)
 	{
@@ -89,9 +97,17 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       std::vector<int> cols = rows;
       
       
-      arma::mat sub = arma::submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());
+      arma::mat sub = submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());
+      try
+	{
+	  arma::mat PM = arma::inv(sub);
+	}
+      catch(runtime_error re)
+	{
+	  //the matrix appears to be singular
+	  cout << sub << endl;
+	}
       
-      arma::mat PM = arma::inv(sub);
       //the correlation matrix is always a positive semi definite matrix
       //inverse can be done faster if the matrix is a positive definite symmetric matrix
       //we specify this so: inv( sympd(sub) )
@@ -120,54 +136,6 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
   
   
 
-
 }
 
 
-/**
- *code from Alain Hauser
- *to get submatrices
- *not very fast, try to speed up/ optimise yourself!
- *ALTERNATIVE: use the method eleme of the armadillo matrix class
- *from mail {"elem" returns a vector, so you should then reshape its elements into a matrix 
- *using one of the member functions "reshape" or "set_size". 
- *I have, however, never used that approach, but I think it should work as described.}
- **/
-namespace arma {
-  /**
-   * Help function to extract arbitrary submatrices
-   */
-  template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,
-							      InputIterator firstRow, InputIterator lastRow,
-							      InputIterator firstCol, InputIterator lastCol)
-  {
-    Mat<T> result(std::distance(firstRow, lastRow), std::distance(firstCol, lastCol));
-    InputIterator row, col;
-    uint i = 0;
-    uint j = 0;
-
-    for (row = firstRow; row != lastRow; ++i, ++row) {
-      j = 0;
-      for (col = firstCol; col != lastCol; ++j, ++col)
-	result(i, j) = input(*row, *col);
-    }
-
-    return result;
-  }
-
-  /**
-   * Help function to extract arbitrary subvectors
-   */
-  template <typename T, typename InputIterator> Col<T> subvec(const Mat<T>& input,
-							      InputIterator firstRow, InputIterator lastRow,
-							      const uint colind)
-  {
-    Col<T> result(std::distance(firstRow, lastRow));
-    uint i = 0;
-
-    for (; firstRow != lastRow; ++i, ++firstRow)
-      result(i) = input(*firstRow, colind);
-
-    return result;
-  }
-}
