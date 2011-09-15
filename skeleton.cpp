@@ -29,19 +29,21 @@ using namespace Rcpp;
 RcppExport SEXP main(SEXP a)
 {
   // now this main is just used for testing the other functions
-  int i = 1,j = 2;
-  NumericMatrix Corr(a);
   
   std::vector<int> k(4);
-  k[0]=5;
-  k[1]=7;
-  k[2]=9;
-  k[3]=11;
+  k[0]=1;
+  k[1]=2;
+  k[2]=3;
+  k[3]=4;
+  std::vector<int> nextset;
   
-  double r = pcorOrder(i,j,k,Corr);
+  for (int i = 0; i < 10; ++i)
+    {
+      nextset = getNextSet(100,4,k);
+      cout << "{" << nextset[0] <<","<<nextset[1]<<","<<nextset[2]<<","<<nextset[3]<<"}" << endl;
+    }
   
-  
-  return wrap(r);
+  return a;
 }
 
 /**
@@ -143,17 +145,20 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
  */
 std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
 {
-  /** initial implementation purely based on the R code, might be a faster way to do this*/
+ /** initial implementation purely based on the R code, might be a faster way to do this*/
   int sum = 0;
   std::vector<int>::iterator row;
   int iter = n-k+1;
   
-  for (row = k.begin(); row !=k.end();++iter,++row)
+  for (row = previous.begin(); row !=previous.end();++iter,++row)
     {
-      sum += iter - *row;
+      sum += (iter - *row == 0);
     }
 
   int chInd = k-sum;
+  chInd = chInd -1; //working with c++ indexing, not R here
+  cout << "chInd = "<< chInd << endl;
+  cout << "k= " << k << " sum = " << sum << endl;
   
   if(chInd == 0)
     {
@@ -162,13 +167,16 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
     }else
     {
       //there is still a set to go
-      previous[chInd]++;
-      //do we need this really?
-      //run some tests
-      //if (chInd < k)
-      //{
-      //  
-      //}
+      cout << "there is still a set to go"<<endl;
+      previous[chInd] =  previous[chInd] +1;
+      //do we need this really? Yes to cover all subsets!
+      if (chInd < k)
+      {
+	for (int i = chInd+1; i < k; ++i)
+	  {
+	    previous[i]=previous[i-1] + 1;
+	  }
+      }
     }
   return previous;
 }
