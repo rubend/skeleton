@@ -33,10 +33,10 @@ RcppExport SEXP main(SEXP a)
   NumericMatrix Corr(a);
   
   std::vector<int> k(4);
-  k.push_back(5);
-  k.push_back(7);
-  k.push_back(8);
-  k.push_back(10);
+  k[0]=5;
+  k[1]=7;
+  k[2]=9;
+  k[3]=11;
   
   double r = pcorOrder(i,j,k,Corr);
   
@@ -85,25 +85,34 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       
       //      arma::mat sub = C[c(i,j,k),c(i,j,k)]
       std::vector<int> rows(k.size()+2);
-      rows.push_back(i);
-      rows.push_back(j);
+      int l =0; // index in rows vector
+      rows[l] = i; 
+      l++;
+      rows[l] = j; 
+      l++;
+      
       std::vector<int>::iterator row;
  
       for (row = k.begin(); row !=k.end();++row)
 	{
-	  rows.push_back(*row);
+	  rows[l] = *row;
+	  l++;
 	}
       
       std::vector<int> cols = rows;
       
-      
+      //might be the big performance stumble block right here, 
+      //possibly needs to be optimized
       arma::mat sub = submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());
+      arma::mat PM;
+      
       try
 	{
-	  arma::mat PM = arma::inv(sub);
+	  PM = arma::inv(sub);
 	}
       catch(runtime_error re)
 	{
+	  cout << "Caught error yes mam!" << endl;
 	  //the matrix appears to be singular
 	  cout << sub << endl;
 	}
