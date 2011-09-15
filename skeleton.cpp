@@ -137,14 +137,40 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 }
 
   
-
+/**
+ * Generate the next set in a list of all possible sets of size k out of 1:n
+ * 
+ */
 std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
 {
-  //int chind = 
-  Rcpp::Range seq = Rcpp::seq(n-k+1,n);
+  /** initial implementation purely based on the R code, might be a faster way to do this*/
+  int sum = 0;
+  std::vector<int>::iterator row;
+  int iter = n-k+1;
   
-  
+  for (row = k.begin(); row !=k.end();++iter,++row)
+    {
+      sum += iter - *row;
+    }
 
+  int chInd = k-sum;
+  
+  if(chInd == 0)
+    {
+      //was last set to check
+      previous[0]=-1; //marks finished
+    }else
+    {
+      //there is still a set to go
+      previous[chInd]++;
+      //do we need this really?
+      //run some tests
+      //if (chInd < k)
+      //{
+      //  
+      //}
+    }
+  return previous;
 }
 
 
