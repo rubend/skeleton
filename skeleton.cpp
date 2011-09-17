@@ -3,6 +3,8 @@
 //#include <Rcpp.h>
 #include <vector>
 #include <submat.h>
+#include <graphfuncts.h>
+
 
 /**
  *Copyright (C) 2011  Ruben Dezeure
@@ -26,25 +28,43 @@
 using namespace std;
 using namespace Rcpp;
 
-RcppExport SEXP main(SEXP a)
+/**
+ * function for computing the skeleton in our DAG
+ * arguments
+ * n number of samples
+ * p number of variables
+ * m_max max order to keep looking for
+ */
+RcppExport SEXP main(SEXP n, SEXP p,SEXP alpha,SEXP m_max)
 {
-  // now this main is just used for testing the other functions
+  // now this main will be implemented as the skeleton function! :p
   
-  std::vector<int> k(4);
-  k[0]=1;
-  k[1]=2;
-  k[2]=3;
-  k[3]=4;
-  std::vector<int> nextset;
+  //using c++ datatypes and trying to writing all functions myself, 
+  //i.e. not calling R from c++
+  //how to store graph? Use matrix?
+  bool G[p*p];// only store upper triangle? -> store as vector?
   
-  for (int i = 0; i < 10; ++i)
+  //all connections exist
+  initialiseGraph(G,p);
+
+  int row = 0;// the current row we are studying the connections of
+  int connections[p-1]; // stores the connections the current row has (maximum p-1)
+  //static allocation ==> efficient
+  
+  for (int ord = 0; ord <= m_max; ++ord)
     {
-      nextset = getNextSet(100,4,k);
-      cout << "{" << nextset[0] <<","<<nextset[1]<<","<<nextset[2]<<","<<nextset[3]<<"}" << endl;
+      //look for next row with connections then iterate over the remaining connections
+      //alternative: save all connections explicitly in double array and loop over those.
+      
     }
+
   
-  return a;
+  
+  
+  return wrap(G);
 }
+
+
 
 /**
  *This function calculates partial correlation of i and j given the set k
