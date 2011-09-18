@@ -1,26 +1,88 @@
 library(inline)
 bod <-
   '
- // now this main is just used for testing the other functions
-  int i = 1,j = 2;
-  NumericMatrix Corr(a);
+ // now this main will be implemented as the skeleton function! :p
   
-  std::vector<int> k(4);
-  k[0]=5;
-  k[1]=7;
-  k[2]=9;
-  k[3]=11;
+  int p = Rcpp::as<int>(p);
+  double alpha = Rcpp::as<double>(alpha);
+  int m_max = Rcpp::as<int>(m_max);
+  NumericMatrix Corr(C);
   
-  double r = pcorOrder(i,j,k,Corr);
+  //using c++ datatypes and trying to writing all functions myself, 
+  //i.e. not calling R from c++
+  //how to store graph? Use matrix?
+  bool G[p*p];// only store upper triangle? -> store as vector?
   
+  //all connections exist
+  initialiseGraph(G,p);
+
+  int row = 0;// the current row we are studying the connections of
+  int connections[p-1]; // stores the connections the current row has (maximum p-1)
+  //static allocation ==> efficient
+  int sizeothers,x,y;
+  double pval;
   
-  return wrap(r);
+  for (int ord = 0; ord <= m_max; ++ord)
+    {
+      //look for next row with connections then iterate over the remaining connections
+      //alternative: save all connections explicitly in double array and loop over those.
+      
+      row = getNextRowWithConnections(row,G,p); // row == x
+      x = row;
+      
+      while(row != -1)
+	{
+	  connections = getRowConnections(row,G,p); // getting the connections belonging to the row
+	  for (int i = 0; i < p-1; ++i)
+	    {
+	      //one of the remaining edge tests
+	      y=connections[i];
+	      
+	      //so now we are gonna check the correlation between row and connections[i]
+	      //in respect to every other subset of lengths ord of the remaining connections
+	      if(y == -1) break;//reached end of connections
+	      //y == connections[i]
+	      std::vector others = getOtherConnections(i,connections);
+	      sizeothers = others.size();
+	      if (sizeothers < ord)
+		{
+		  continue;//goto next loop iteration
+		}
+	      
+	      //initial subset, TODO is there a more efficient way? Builtin way for this?
+	      std::vector subset = getSeqVector(ord);
+	      
+	     
+	      while(subset[0] != -1)
+		{
+		  std::vector k = others[subset] //does this work? check! otherwise write own function that does this.
+		  //pval = pcorOrder(x,y,k,C)
+		  pval = pcorOrder(x,y,k,Corr);
+		  
+		  if (pval >= alpha)
+		    {
+		      //independent
+		      G[x,y]=false;G[y,x]=false;
+		      break; //no more checking to be done
+		    }
+		  
+		  subset = getNextSet(sizeothers,ord,subset);
+		}
+	      
+	    }
+	  row = getNextRowWithConnections(row+1,G,p);
+	}
+    }
+  
+  return wrap(G); // return graph matrix, in later stage return a more complete object
 '
 inc <- '
 #include <iostream>
 #include <algorithm>
 //#include <Rcpp.h>
 #include <vector>
+#include <submat.h>
+#include <graphfuncts.h>
 
 /**
  *Copyright (C) 2011  Ruben Dezeure
@@ -50,44 +112,6 @@ inc <- '
  *using one of the member functions "reshape" or "set_size". 
  *I have, however, never used that approach, but I think it should work as described.}
  **/
-namespace arma {
-  /**
-   * Help function to extract arbitrary submatrices
-   */
-  template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,
-							      InputIterator firstRow, InputIterator lastRow,
-							      InputIterator firstCol, InputIterator lastCol)
-  {
-    Mat<T> result(std::distance(firstRow, lastRow), std::distance(firstCol, lastCol));
-    InputIterator row, col;
-    unsigned int i = 0;
-    unsigned int j = 0;
-
-    for (row = firstRow; row != lastRow; ++i, ++row) {
-      j = 0;
-      for (col = firstCol; col != lastCol; ++j, ++col)
-	result(i, j) = input(*row, *col);
-    }
-
-    return result;
-  }
-
-  /**
-   * Help function to extract arbitrary subvectors
-   */
-  template <typename T, typename InputIterator> Col<T> subvec(const Mat<T>& input,
-							      InputIterator firstRow, InputIterator lastRow,
-							      const unsigned int colind)
-  {
-    Col<T> result(std::distance(firstRow, lastRow));
-    unsigned int i = 0;
-
-    for (; firstRow != lastRow; ++i, ++firstRow)
-      result(i) = input(*firstRow, colind);
-
-    return result;
-  }
-}
 
 using namespace std;
 

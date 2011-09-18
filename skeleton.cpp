@@ -35,10 +35,13 @@ using namespace Rcpp;
  * p number of variables
  * m_max max order to keep looking for
  */
-RcppExport SEXP main(SEXP n, SEXP p,SEXP alpha,SEXP m_max, SEXP C)
+RcppExport SEXP main(SEXP p,SEXP alpha,SEXP m_max, SEXP C)
 {
   // now this main will be implemented as the skeleton function! :p
   
+  int p = Rcpp::as<int>(p);
+  double alpha = Rcpp::as<double>(alpha);
+  int m_max = Rcpp::as<int>(m_max);
   NumericMatrix Corr(C);
   
   //using c++ datatypes and trying to writing all functions myself, 
