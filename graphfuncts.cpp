@@ -1,4 +1,3 @@
-#include <vector>
 
 /**
  *Copyright (C) 2011  Ruben Dezeure
@@ -160,4 +159,22 @@ std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)
       subset[i] = set[subsetind[i]];
     }
   return subset;
+}
+
+/**
+ *converts the boolian matrix to a logical matrix so we can easily return it to R
+ */
+LogicalMatrix convertToLogical(bool* G,int p)
+{
+  LogicalMatrix log(p,p);
+  
+  for (int i = 0; i < N; ++i)
+    {
+      for (int j = 0; j<p; ++j)
+	{
+	  log(i,j) = G[i*p+j];
+	}
+    }
+  return log;
+  
 }

@@ -16,7 +16,7 @@ INCLUDES :=		-I.
 c_sources := 		$(wildcard *.c)
 c_sharedlibs := 	$(patsubst %.c,%.o,$(c_sources))
 
-cpp_sources := 		$(wildcard *.cpp)
+cpp_sources := 		skeleton.cpp
 cpp_sharedlibs := 	$(patsubst %.cpp,%.o,$(cpp_sources))
 
 all :			$(c_sharedlibs) $(cpp_sharedlibs)

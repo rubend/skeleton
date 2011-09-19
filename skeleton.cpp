@@ -29,6 +29,10 @@
 using namespace std;
 using namespace Rcpp;
 
+double pcorOrder(int,int,std::vector<int>,NumericMatrix);
+std::vector<int> getNextSet(int,int,std::vector<int>);
+
+
 /**
  * function for computing the skeleton in our DAG
  * arguments
@@ -111,7 +115,10 @@ RcppExport SEXP skeleton(SEXP pt,SEXP alphat,SEXP m_maxt, SEXP C)
 	}
     }
   
-  return wrap(G); // return graph matrix, in later stage return a more complete object
+  //convert G to a logicalMatrix for returning to R?
+  
+  
+  return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object
 }
 
 
