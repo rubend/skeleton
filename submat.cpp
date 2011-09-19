@@ -10,6 +10,9 @@
  *using one of the member functions "reshape" or "set_size". 
  *I have, however, never used that approach, but I think it should work as described.}
  **/
+namespace arma
+{
+  
 template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,
 							      InputIterator firstRow, InputIterator lastRow,
 							      InputIterator firstCol, InputIterator lastCol)
@@ -43,3 +46,4 @@ template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,
 
     return result;
   }
+}

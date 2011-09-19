@@ -63,9 +63,8 @@ bool any(bool *G,int p)
  * row that still has connections.
  * -1 signals end of connections
  */
-int[] getNextRowConnections(int row,bool* G,int p)
+void getRowConnections(int row,bool* G,int p,int* connections)
 {
-  int connections[p-1];//stores the connections we will return
   int index = 0;//keeping track of the index in the connections vector
   
   //there is still a row >= startrow with connections
@@ -83,8 +82,8 @@ int[] getNextRowConnections(int row,bool* G,int p)
       //we didn't have p-1 connections
       connections[index+1] = -1; // signal end
     }
-  
-  return connections;
+
+  return;
 }
 
 /**
@@ -115,9 +114,9 @@ int getNextRowWithConnections(int startrow,bool* G,int p)
 /**
  * get the other connection when excluding y
  */
-std::vector getOtherConnections(int j,int[] connections)
+std::vector<int> getOtherConnections(int j,int* connections,int p)
 {
-  std::vector others(0);
+  std::vector<int> others(0);
 
   for (int i = 0; i < p-1; ++i)
     {
@@ -136,11 +135,10 @@ std::vector getOtherConnections(int j,int[] connections)
 /**
  * Creates a vector of size ord with elements 1:ord
  *
- *
  */
-std::vector getSeqVector(int ord)
+std::vector<int> getSeqVector(int ord)
 {
-  std::vector seq(ord);
+  std::vector<int> seq(ord);
   for (int i = 0; i < ord; ++i)
     {
       seq[i] = i+1;
@@ -148,3 +146,16 @@ std::vector getSeqVector(int ord)
   return seq;
 }
 
+/**
+ *Get a subset of a vector with the subset signalled by the indices in the vector subset
+ *
+ */
+std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)
+{
+  std::vector<int> subset(subsetind.size(),0);
+  for (int i = 0; i < subsetind.size(); ++i)
+    {
+      subset[i] = set[subsetind[i]];
+    }
+  return subset;
+}

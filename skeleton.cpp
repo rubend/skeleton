@@ -68,7 +68,7 @@ RcppExport SEXP main(SEXP p,SEXP alpha,SEXP m_max, SEXP C)
       
       while(row != -1)
 	{
-	  connections = getRowConnections(row,G,p); // getting the connections belonging to the row
+	  getRowConnections(row,G,p,connections); // getting the connections belonging to the row
 	  for (int i = 0; i < p-1; ++i)
 	    {
 	      //one of the remaining edge tests
@@ -78,7 +78,7 @@ RcppExport SEXP main(SEXP p,SEXP alpha,SEXP m_max, SEXP C)
 	      //in respect to every other subset of lengths ord of the remaining connections
 	      if(y == -1) break;//reached end of connections
 	      //y == connections[i]
-	      std::vector others = getOtherConnections(i,connections);
+	      std::vector<int> others = getOtherConnections(i,connections,p);
 	      sizeothers = others.size();
 	      if (sizeothers < ord)
 		{
@@ -86,12 +86,12 @@ RcppExport SEXP main(SEXP p,SEXP alpha,SEXP m_max, SEXP C)
 		}
 	      
 	      //initial subset, TODO is there a more efficient way? Builtin way for this?
-	      std::vector subset = getSeqVector(ord);
+	      std::vector<int> subset = getSeqVector(ord);
 	      
 	     
 	      while(subset[0] != -1)
 		{
-		  std::vector k = others[subset] //does this work? check! otherwise write own function that does this.
+		  std::vector<int> k = getSubset(others,subset); //does this work? check! otherwise write own function that does this.
 		  //pval = pcorOrder(x,y,k,C)
 		  pval = pcorOrder(x,y,k,Corr);
 		  
@@ -174,7 +174,7 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       
       //might be the big performance stumble block right here, 
       //possibly needs to be optimized
-      arma::mat sub = submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());
+      arma::mat sub = arma::submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());
       arma::mat PM;
       
       try

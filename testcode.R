@@ -1,8 +1,6 @@
 library(inline)
 bod <-
   '
- // now this main will be implemented as the skeleton function! :p
-  
   int p = Rcpp::as<int>(p);
   double alpha = Rcpp::as<double>(alpha);
   int m_max = Rcpp::as<int>(m_max);
@@ -32,7 +30,7 @@ bod <-
       
       while(row != -1)
 	{
-	  connections = getRowConnections(row,G,p); // getting the connections belonging to the row
+	  getRowConnections(row,G,p,connections); // getting the connections belonging to the row
 	  for (int i = 0; i < p-1; ++i)
 	    {
 	      //one of the remaining edge tests
@@ -42,7 +40,7 @@ bod <-
 	      //in respect to every other subset of lengths ord of the remaining connections
 	      if(y == -1) break;//reached end of connections
 	      //y == connections[i]
-	      std::vector others = getOtherConnections(i,connections);
+	      std::vector<int> others = getOtherConnections(i,connections,p);
 	      sizeothers = others.size();
 	      if (sizeothers < ord)
 		{
@@ -50,12 +48,12 @@ bod <-
 		}
 	      
 	      //initial subset, TODO is there a more efficient way? Builtin way for this?
-	      std::vector subset = getSeqVector(ord);
+	      std::vector<int> subset = getSeqVector(ord);
 	      
 	     
 	      while(subset[0] != -1)
 		{
-		  std::vector k = others[subset] //does this work? check! otherwise write own function that does this.
+		  std::vector<int> k = getSubset(others,subset); //does this work? check! otherwise write own function that does this.
 		  //pval = pcorOrder(x,y,k,C)
 		  pval = pcorOrder(x,y,k,Corr);
 		  
@@ -74,15 +72,13 @@ bod <-
 	}
     }
   
-  return wrap(G); // return graph matrix, in later stage return a more complete object
+  return Rcpp::wrap(G); // return graph matrix, in later stage return a more complete object
 '
 inc <- '
 #include <iostream>
 #include <algorithm>
 //#include <Rcpp.h>
 #include <vector>
-#include <submat.h>
-#include <graphfuncts.h>
 
 /**
  *Copyright (C) 2011  Ruben Dezeure
@@ -108,12 +104,45 @@ inc <- '
  *to get submatrices
  *not very fast, try to speed up/ optimise yourself!
  *ALTERNATIVE: use the method eleme of the armadillo matrix class
- *from mail {"elem" returns a vector, so you should then reshape its elements into a matrix 
- *using one of the member functions "reshape" or "set_size". 
+ *from mail {\"elem\" returns a vector, so you should then reshape its elements into a matrix 
+ *using one of the member functions \"reshape\" or \"set_size\". 
  *I have, however, never used that approach, but I think it should work as described.}
  **/
 
+namespace arma{
+
+template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,InputIterator firstRow, InputIterator lastRow,InputIterator firstCol, InputIterator lastCol)
+  {
+    Mat<T> result(std::distance(firstRow, lastRow), std::distance(firstCol, lastCol));
+    InputIterator row, col;
+    unsigned int i = 0;
+    unsigned int j = 0;
+
+    for (row = firstRow; row != lastRow; ++i, ++row) {
+      j = 0;
+      for (col = firstCol; col != lastCol; ++j, ++col)
+	result(i, j) = input(*row, *col);
+    }
+
+    return result;
+  }
+
+  /**
+   * Help function to extract arbitrary subvectors
+   */
+  template <typename T, typename InputIterator> Col<T> subvec(const Mat<T>& input,InputIterator firstRow, InputIterator lastRow,const unsigned int colind)
+  {
+    Col<T> result(std::distance(firstRow, lastRow));
+    unsigned int i = 0;
+
+    for (; firstRow != lastRow; ++i, ++firstRow)
+      result(i) = input(*firstRow, colind);
+
+    return result;
+  }
+}
 using namespace std;
+
 
 /**
  *This function calculates partial correlation of i and j given the set k
@@ -204,14 +233,193 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
   return min(cutat,max(-cutat,r));
 }
 
+
+/**
+ * Generate the next set in a list of all possible sets of size k out of 1:n
+ * 
+ */
+std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
+{
+ /** initial implementation purely based on the R code, might be a faster way to do this*/
+  int sum = 0;
+  std::vector<int>::iterator row;
+  int iter = n-k+1;
+  
+  for (row = previous.begin(); row !=previous.end();++iter,++row)
+    {
+      sum += (iter - *row == 0);
+    }
+
+  int chInd = k-sum;
+  chInd = chInd -1; //working with c++ indexing, not R here
+  cout << "chInd = "<< chInd << endl;
+  cout << "k= " << k << " sum = " << sum << endl;
+  
+  if(chInd == 0)
+    {
+      //was last set to check
+      previous[0]=-1; //marks finished
+    }else
+    {
+      //there is still a set to go
+      cout << "there is still a set to go"<<endl;
+      previous[chInd] =  previous[chInd] +1;
+      //do we need this really? Yes to cover all subsets!
+      if (chInd < k)
+      {
+	for (int i = chInd+1; i < k; ++i)
+	  {
+	    previous[i]=previous[i-1] + 1;
+	  }
+      }
+    }
+  return previous;
+}
+
+/**
+ * initialise our graph with all connections on
+ *
+ *
+ */
+void initialiseGraph(bool* G,int p)
+{
+  for (int i = 0; i < p*p; ++i)
+    {
+      G[i] = true;
+    }
+
+  for (int i = 0; i < p; ++i)
+    {
+      //diagonal connections obviously don\'t exist
+      G[i*p+i] = false;
+    }
+}
+
+/**
+ * any method looks if there is still a connection in the graph matrix
+ */
+bool any(bool *G,int p)
+{
+  for (int i = 0; i < p*p; ++i)
+    {
+      if (G[i] == true)
+	{
+	  return true;
+	}
+    }
+}
+
+/**
+ * row = the row from which we want the connections in the graph
+ * G = the graph
+ * p = the number of rows
+ * returns a integer vector containing the connections of the next 
+ * row that still has connections.
+ * -1 signals end of connections
+ */
+void getRowConnections(int row,bool* G,int p,int* connections)
+{
+  int index = 0;//keeping track of the index in the connections vector
+  
+  //there is still a row >= startrow with connections
+  for (int j = 0; j < p; ++j)
+    {
+      if (G[row*p+j] == true)
+	{
+	  connections[index] = j;
+	  index++;  
+	}
+    }
+  
+  if (index != p-1)
+    {
+      //we didn\'t have p-1 connections
+      connections[index+1] = -1; // signal end
+    }
+  
+  return ;
+}
+
+/**
+ * startrow = the row from which to start looking for a row with connections in the graph
+ * G = the graph
+ * p = the number of rows
+ * returns an integer value that says which row still has connections
+ */
+int getNextRowWithConnections(int startrow,bool* G,int p)
+{
+  for (int row = startrow; row < p; ++row)
+    {
+      for (int i = row; i < p; ++i)
+	{
+	  //only search through the upper triangular
+	  if(G[row*p+i] == true)
+	    {
+	      //we have a hit!
+	      return row;
+	    }
+	}
+    }
+  
+  //seems like there are no more rows >= startrows containing connections
+  return -1;
+}
+
+/**
+ * get the other connection when excluding y
+ */
+std::vector<int> getOtherConnections(int j,int* connections,int p)
+{
+  std::vector<int> others(0);
+
+  for (int i = 0; i < p-1; ++i)
+    {
+      if (connections[i] == -1) break;
+
+      //we don\'t want y==connections[j] in here
+      if (i != j)
+	{
+	  others.push_back(connections[i]);
+	}
+    }
+  
+  return others;
+}
+
+/**
+ * Creates a vector of size ord with elements 1:ord
+ *
+ *
+ */
+vector<int> getSeqVector(int ord)
+{
+  vector<int> seq(ord);
+  for (int i = 0; i < ord; ++i)
+    {
+      seq[i] = i+1;
+    }
+  return seq;
+}
+
+/**
+ *Get a subset of a vector with the subset signalled by the indices in the vector subset
+ *
+ */
+std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)
+{
+  std::vector<int> subset(subsetind.size(),0);
+  for (int i = 0; i < subsetind.size(); ++i)
+    {
+      subset[i] = set[subsetind[i]];
+    }
+  return subset;
+}
 '
-fun <- cxxfunction(signature(a="numeric"),body = bod,includes=inc,plugin="RcppArmadillo")
+
+fun <- cxxfunction(signature(p="integer",alpha="numeric",m_max="integer",C="numeric"),body = bod,includes=inc,plugin="RcppArmadillo")
 sizem <- 100
 mat <- matrix(0.01*rnorm(sizem*sizem),sizem,sizem)
 diag(mat) <- 0
 
 Crr <- diag(sizem) + mat
 #fun(Crr)
-
-
-                                     
