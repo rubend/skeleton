@@ -25,5 +25,5 @@ all :			$(c_sharedlibs) $(cpp_sharedlibs)
 %.o : 			%.cpp
 			PKG_CPPFLAGS="$(RCPPFLAGS) $(RCPPINCL)" PKG_LIBS="$(RLDFLAGS) $(RCPPLIBS)" R CMD SHLIB $<
 
-run :			$(c_sharedlibs) $(cpp_sharedlibs)
-			Rscript exampleRCode.r
+##run :			$(c_sharedlibs) $(cpp_sharedlibs)
+##			Rscript exampleRCode.r

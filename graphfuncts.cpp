@@ -1,3 +1,5 @@
+#include <vector>
+
 /**
  *Copyright (C) 2011  Ruben Dezeure
  *Contact: dezeurer@student.ethz.ch

@@ -1,9 +1,13 @@
 library(inline)
 bod <-
   '
-  int p = Rcpp::as<int>(p);
-  double alpha = Rcpp::as<double>(alpha);
-  int m_max = Rcpp::as<int>(m_max);
+  //int p = as<int>(p);
+  //double alpha = as<double>(alpha);
+  //int m_max = as<int>(m_max);
+  int p = as<int>(vars);
+  double alpha = as<double>(alphav);
+  int m_max = as<int>(mmax);
+
   NumericMatrix Corr(C);
   
   //using c++ datatypes and trying to writing all functions myself, 
@@ -416,7 +420,7 @@ std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)
 }
 '
 
-fun <- cxxfunction(signature(p="integer",alpha="numeric",m_max="integer",C="numeric"),body = bod,includes=inc,plugin="RcppArmadillo")
+fun <- cxxfunction(signature(vars="integer",alphav="numeric",mmax="integer",C="numeric"),body = bod,includes=inc,plugin="RcppArmadillo")
 sizem <- 100
 mat <- matrix(0.01*rnorm(sizem*sizem),sizem,sizem)
 diag(mat) <- 0

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
-//#include <Rcpp.h>
+#include <Rcpp.h>
+#include <Rcpparmadillo.h>
 #include <vector>
 #include <submat.h>
 #include <graphfuncts.h>
@@ -35,13 +36,13 @@ using namespace Rcpp;
  * p number of variables
  * m_max max order to keep looking for
  */
-RcppExport SEXP main(SEXP p,SEXP alpha,SEXP m_max, SEXP C)
+RcppExport SEXP skeleton(SEXP pt,SEXP alphat,SEXP m_maxt, SEXP C)
 {
   // now this main will be implemented as the skeleton function! :p
   
-  int p = Rcpp::as<int>(p);
-  double alpha = Rcpp::as<double>(alpha);
-  int m_max = Rcpp::as<int>(m_max);
+  int p = as<int>(pt);
+  double alpha = as<double>(alphat);
+  int m_max = as<int>(m_maxt);
   NumericMatrix Corr(C);
   
   //using c++ datatypes and trying to writing all functions myself, 
