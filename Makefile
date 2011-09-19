@@ -11,6 +11,8 @@ RLDFLAGS := 		$(shell $(R_HOME)/bin/R CMD config --ldflags)
 RCPPINCL := 		$(shell echo 'Rcpp:::CxxFlags()' | $(R_HOME)/bin/R --vanilla --slave)
 RCPPLIBS := 		$(shell echo 'Rcpp:::LdFlags()'  | $(R_HOME)/bin/R --vanilla --slave)
 
+INCLUDES :=		-I.
+
 c_sources := 		$(wildcard *.c)
 c_sharedlibs := 	$(patsubst %.c,%.o,$(c_sources))
 
@@ -23,7 +25,7 @@ all :			$(c_sharedlibs) $(cpp_sharedlibs)
 			R CMD SHLIB $<
 
 %.o : 			%.cpp
-			PKG_CPPFLAGS="$(RCPPFLAGS) $(RCPPINCL)" PKG_LIBS="$(RLDFLAGS) $(RCPPLIBS)" R CMD SHLIB $<
+			PKG_CPPFLAGS="$(RCPPFLAGS) $(RCPPINCL) $(INCLUDES)" PKG_LIBS="$(RLDFLAGS) $(RCPPLIBS)" R CMD SHLIB $<
 
 ##run :			$(c_sharedlibs) $(cpp_sharedlibs)
 ##			Rscript exampleRCode.r
