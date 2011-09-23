@@ -1,6 +1,6 @@
 #!/usr/bin/r
 
-suppressMessages(require(Rcpp))
+suppressMessages(require(RcppArmadillo))
 set.seed(42)
 n <- 200
 a <- rnorm(n)
@@ -11,8 +11,14 @@ dyn.load("skeleton.so")
 
 ## now run each one once for comparison of results,
 ## and define test functions
+alpha <- 0.05
+mmax <- 10
+C <- 0
+p <- 100
 
-skeleton <- function(p,alpha,mmax,C) .Call("skelehhhhquit()ton", p,alpha,mmax,C)
+
+
+skeleton <- function(p,alpha,mmax,C) .Call("skeleton", p,alpha,mmax,C)
 ##skeletonR <- function(n,a,b) skeletonold
 
 v1 <- R_API_optimised(1L, a, b )

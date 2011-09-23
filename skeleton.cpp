@@ -49,7 +49,7 @@ RcppExport SEXP skeleton(SEXP pt,SEXP alphat,SEXP m_maxt, SEXP C)
   int m_max = as<int>(m_maxt);
   NumericMatrix Corr(C);
   
-  //using c++ datatypes and trying to writing all functions myself, 
+  //using c++ datatypes and trying to write all functions myself, 
   //i.e. not calling R from c++
   //how to store graph? Use matrix?
   bool G[p*p];// only store upper triangle? -> store as vector?
