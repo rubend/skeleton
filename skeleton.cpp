@@ -55,6 +55,8 @@ RcppExport SEXP skeleton(SEXP pt,SEXP alphat,SEXP m_maxt, SEXP C)
   bool G[p*p];// only store upper triangle? -> store as vector?
   
   //all connections exist
+  cout << "Got till the initialisation" << endl;
+  
   initialiseGraph(G,p);
 
   int row = 0;// the current row we are studying the connections of

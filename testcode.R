@@ -1,21 +1,21 @@
 library(inline)
 bod <-
   '
-  //int p = as<int>(p);
-  //double alpha = as<double>(alpha);
-  //int m_max = as<int>(m_max);
-  int p = as<int>(vars);
-  double alpha = as<double>(alphav);
-  int m_max = as<int>(mmax);
-
+  // now this main will be implemented as the skeleton function! :p
+  
+  int p = as<int>(pt);
+  double alpha = as<double>(alphat);
+  int m_max = as<int>(m_maxt);
   NumericMatrix Corr(C);
   
-  //using c++ datatypes and trying to writing all functions myself, 
+  //using c++ datatypes and trying to write all functions myself, 
   //i.e. not calling R from c++
   //how to store graph? Use matrix?
   bool G[p*p];// only store upper triangle? -> store as vector?
   
   //all connections exist
+  cout << "Got till the initialisation" << endl;
+
   initialiseGraph(G,p);
 
   int row = 0;// the current row we are studying the connections of
@@ -76,8 +76,12 @@ bod <-
 	}
     }
   
-  return Rcpp::wrap(G); // return graph matrix, in later stage return a more complete object
+  //convert G to a logicalMatrix for returning to R?
+  
+  
+  return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object
 '
+
 inc <- '
 #include <iostream>
 #include <algorithm>
@@ -395,9 +399,9 @@ std::vector<int> getOtherConnections(int j,int* connections,int p)
  *
  *
  */
-vector<int> getSeqVector(int ord)
+std::vector<int> getSeqVector(int ord)
 {
-  vector<int> seq(ord);
+  std::vector<int> seq(ord);
   for (int i = 0; i < ord; ++i)
     {
       seq[i] = i+1;
@@ -418,9 +422,27 @@ std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)
     }
   return subset;
 }
+
+/**
+ *converts the boolian matrix to a logical matrix so we can easily return it to R
+ */
+LogicalMatrix convertToLogical(bool* G,int p)
+{
+  LogicalMatrix log(p,p);
+  
+  for (int i = 0; i < p; ++i)
+    {
+      for (int j = 0; j<p; ++j)
+	{
+	  log(i,j) = G[i*p+j];
+	}
+    }
+  return log;
+  
+}
 '
 
-fun <- cxxfunction(signature(vars="integer",alphav="numeric",mmax="integer",C="numeric"),body = bod,includes=inc,plugin="RcppArmadillo")
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body = bod,includes=inc,plugin="RcppArmadillo")
 sizem <- 100
 mat <- matrix(0.01*rnorm(sizem*sizem),sizem,sizem)
 diag(mat) <- 0

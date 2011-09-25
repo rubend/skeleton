@@ -168,7 +168,7 @@ LogicalMatrix convertToLogical(bool* G,int p)
 {
   LogicalMatrix log(p,p);
   
-  for (int i = 0; i < N; ++i)
+  for (int i = 0; i < p; ++i)
     {
       for (int j = 0; j<p; ++j)
 	{
