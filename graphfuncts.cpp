@@ -1,3 +1,4 @@
+#include <vector>
 
 /**
  *Copyright (C) 2011  Ruben Dezeure
@@ -17,6 +18,8 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+using namespace std;
+using namespace Rcpp;
 
 /**
  * This file contains functions doing operations on the graph
@@ -115,7 +118,7 @@ int getNextRowWithConnections(int startrow,bool G[],int p)
 /**
  * get the other connection when excluding y
  */
-void getOtherConnections(vector<int>* others,int j,int* connections,int p)
+void getOtherConnections(std::vector<int>* others,int j,int* connections,int p)
 {
   (*others).resize(0);
   for (int i = 0; i < p-1; ++i)
@@ -125,7 +128,7 @@ void getOtherConnections(vector<int>* others,int j,int* connections,int p)
       //we don\'t want y==connections[j] in here
       if (i != j)
 	{
-	  others.push_back(connections[i]);
+	  (*others).push_back(connections[i]);
 	}
     }
   
@@ -136,7 +139,7 @@ void getOtherConnections(vector<int>* others,int j,int* connections,int p)
  * Creates a vector of size ord with elements 1:ord
  *
  */
-void getSeqVector(vector<int>* subset,int ord)
+void getSeqVector(std::vector<int>* subset,int ord)
 {
   (*subset).resize(ord);
   for (int i = 0; i < ord; ++i)

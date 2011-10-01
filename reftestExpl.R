@@ -2,7 +2,7 @@ library(pcalg)
 
 library(inline)
 ## test!
-funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body=paste(readLines("skeleton.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),readLines("submat.h"),collapse="\n"),plugin="RcppArmadillo")
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body=paste(readLines("skeletonquick.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),collapse="\n"),plugin="RcppArmadillo")
 
 ## NOTE: Usually, we would ESTIMATE the correlation matrix; but since we are
 ## only interested in the runtime performance, we can use the true correlation

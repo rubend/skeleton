@@ -191,7 +191,7 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 	{
 	  PM = arma::inv(sub);
 	}
-      catch(runtime_error re)
+      catch(std::runtime_error re)
 	{
 	  cout << "Caught error yes mam!" << endl;
 	  //the matrix appears to be singular

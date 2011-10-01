@@ -1,46 +1,4 @@
-#include <iostream>
-#include <algorithm>
-#include <Rcpp.h>
-#include <Rcpparmadillo.h>
-#include <vector>
-//#include <submat.h>
-//#include <graphfuncts.h>
 
-/**
- *Copyright (C) 2011  Ruben Dezeure
- *Contact: dezeurer@student.ethz.ch
- *
- *This program is free software; you can redistribute it and/or
- *modify it under the terms of the GNU General Public License
- *as published by the Free Software Foundation; either version 2
- *of the License, or (at your option) any later version.
- *
- *This program is distributed in the hope that it will be useful,
- *but WITHOUT ANY WARRANTY; without even the implied warranty of
- *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *GNU General Public License for more details.
- *
- *You should have received a copy of the GNU General Public License
- *along with this program; if not, write to the Free Software
- *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- **/
-
-using namespace std;
-using namespace Rcpp;
-
-double pcorOrder(int,int,std::vector<int>,NumericMatrix);
-std::vector<int> getNextSet(int,int,std::vector<int>);
-
-
-/**
- * function for computing the skeleton in our DAG
- * arguments
- * n number of samples
- * p number of variables
- * m_max max order to keep looking for
- */
-RcppExport SEXP skeleton(SEXP pt,SEXP alphat,SEXP m_maxt, SEXP C)
-{
   // now this main will be implemented as the skeleton function! :p
   
   int p = as<int>(pt);
@@ -121,4 +79,3 @@ RcppExport SEXP skeleton(SEXP pt,SEXP alphat,SEXP m_maxt, SEXP C)
   
   
   return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object
-}
