@@ -15,7 +15,7 @@ bod <-
   
   //all connections exist
   cout << "Got till the initialisation" << endl;
-
+  
   initialiseGraph(G,p);
 
   int row = 0;// the current row we are studying the connections of
@@ -23,6 +23,7 @@ bod <-
   //static allocation ==> efficient
   int sizeothers,x,y;
   double pval;
+  vector<int> subset(0);//declare in beginning and increase size every loop run
   
   for (int ord = 0; ord <= m_max; ++ord)
     {
@@ -52,7 +53,7 @@ bod <-
 		}
 	      
 	      //initial subset, TODO is there a more efficient way? Builtin way for this?
-	      std::vector<int> subset = getSeqVector(ord);
+	      getSeqVector(&subset,ord);//get sequence vector of size ord in subset 
 	      
 	     
 	      while(subset[0] != -1)
@@ -80,6 +81,7 @@ bod <-
   
   
   return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object
+
 '
 
 inc <- '
@@ -158,6 +160,7 @@ using namespace std;
  */
 double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 {
+  cout<< " pcorOrder" <<endl;
   double r;
   double cutat = 0.99999;
   
@@ -238,6 +241,7 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
     r = 0;
   
   //min(cut.at,max(-cut.at,r))
+
   return min(cutat,max(-cutat,r));
 }
 
@@ -249,6 +253,8 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
 {
  /** initial implementation purely based on the R code, might be a faster way to do this*/
+   cout<< " getnextset" <<endl;
+
   int sum = 0;
   std::vector<int>::iterator row;
   int iter = n-k+1;
@@ -289,8 +295,10 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
  *
  *
  */
-void initialiseGraph(bool* G,int p)
+void initialiseGraph(bool G[],int p)
 {
+  cout<< "initialisegraph" <<endl;
+
   for (int i = 0; i < p*p; ++i)
     {
       G[i] = true;
@@ -306,8 +314,10 @@ void initialiseGraph(bool* G,int p)
 /**
  * any method looks if there is still a connection in the graph matrix
  */
-bool any(bool *G,int p)
+bool any(bool G[],int p)
 {
+  cout<< "any" <<endl;
+
   for (int i = 0; i < p*p; ++i)
     {
       if (G[i] == true)
@@ -325,8 +335,10 @@ bool any(bool *G,int p)
  * row that still has connections.
  * -1 signals end of connections
  */
-void getRowConnections(int row,bool* G,int p,int* connections)
+void getRowConnections(int row,bool G[],int p,int* connections)
 {
+  cout<< "getrowconnections" <<endl;
+
   int index = 0;//keeping track of the index in the connections vector
   
   //there is still a row >= startrow with connections
@@ -344,8 +356,8 @@ void getRowConnections(int row,bool* G,int p,int* connections)
       //we didn\'t have p-1 connections
       connections[index+1] = -1; // signal end
     }
-  
-  return ;
+
+  return;
 }
 
 /**
@@ -354,8 +366,10 @@ void getRowConnections(int row,bool* G,int p,int* connections)
  * p = the number of rows
  * returns an integer value that says which row still has connections
  */
-int getNextRowWithConnections(int startrow,bool* G,int p)
+int getNextRowWithConnections(int startrow,bool G[],int p)
 {
+  cout<< "getnextrowwithconnections" <<endl;
+
   for (int row = startrow; row < p; ++row)
     {
       for (int i = row; i < p; ++i)
@@ -378,6 +392,8 @@ int getNextRowWithConnections(int startrow,bool* G,int p)
  */
 std::vector<int> getOtherConnections(int j,int* connections,int p)
 {
+  cout<< "getotherconnections" <<endl;
+
   std::vector<int> others(0);
 
   for (int i = 0; i < p-1; ++i)
@@ -397,16 +413,15 @@ std::vector<int> getOtherConnections(int j,int* connections,int p)
 /**
  * Creates a vector of size ord with elements 1:ord
  *
- *
  */
-std::vector<int> getSeqVector(int ord)
+void getSeqVector(vector<int>* subset,int ord)
 {
-  std::vector<int> seq(ord);
+    (*subset).resize(ord);
   for (int i = 0; i < ord; ++i)
     {
-      seq[i] = i+1;
+      (*subset)[i] = i+1;
     }
-  return seq;
+  return;
 }
 
 /**
@@ -415,6 +430,8 @@ std::vector<int> getSeqVector(int ord)
  */
 std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)
 {
+  cout<< "getSubset" <<endl;
+
   std::vector<int> subset(subsetind.size(),0);
   for (int i = 0; i < subsetind.size(); ++i)
     {
@@ -426,7 +443,7 @@ std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)
 /**
  *converts the boolian matrix to a logical matrix so we can easily return it to R
  */
-LogicalMatrix convertToLogical(bool* G,int p)
+LogicalMatrix convertToLogical(bool G[],int p)
 {
   LogicalMatrix log(p,p);
   
@@ -440,6 +457,7 @@ LogicalMatrix convertToLogical(bool* G,int p)
   return log;
   
 }
+
 '
 
 funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body = bod,includes=inc,plugin="RcppArmadillo")
