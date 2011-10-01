@@ -1,0 +1,2483 @@
+demo()
+help("INSTALL")
+aqw <- c(2,3,5)
+aqw
+q()
+chooseCRANmirror()
+install.packages("leaps",dependencies=TRUE)
+install.packages()
+quit()
+density
+help(density)
+?glm
+help(which)
+library(Rcpp)
+install(Rcpp)
+install.packages()
+install.packages("Rcpp")
+install.package("Rcpp")
+install.packages("Rcpp")
+Rcpp
+rcpp
+quit(*)
+quit()
+cxxfunction
+update.packages()
+library(Rcpp)
+cxxfunction
+Rcpp
+help(Rcpp)
+vignette("Rcpp-introduction")
+vignette("Rcpp-package")
+src <- ''
+src <- '
+Rcpp::NumericVector xa(a);
+Rcpp::NumericVector xb(b);
+int n_xa = xa.size(),n_xb=xb.size();
+Rcpp::NumericVecor(xab(n_xa+n_xb-1));
+for(inti=0;i<n_xa;i++)
+ for(int j=0; j<n_xb; j++)
+  xab[i+j]+=xa[i]*xb[j]
+return xab;
+'
+fun <- cxxfunction(signature(q="numeric",b="numeric"),src,plugin="Rcpp")
+library(cxxfunction)
+library(inline)
+cfunction
+library(inline)
+install.packages("inline")
+library(inline)
+fun <- cxxfunction(signature(q="numeric",b="numeric"),src,plugin="Rcpp")
+install.packages()
+library(Rcpparmadillo)
+library(RcppArmadillo)
+vignette(RcppArmadillo)
+install.package(corpcor)
+install.packages()
+vignette(Rcpp-sugar)
+vignette(Rcppsugar)
+q()
+A <- matrix(numeric(9),3,3)
+A
+A[c(1,3),c(1,3)]
+q()
+vignette(rcpp)
+vignette(Rcpp)
+vignette("Rcoo")
+vignette("Rcpp")
+library(Rcpparmadillo)
+library(RcppArmadillo)
+vignette(inline)
+library(RcppArmadillo)
+RcppArmadillo.package.skeleton
+require(RcppArmadillo)#
+| require(inline)#
+| #
+| f <- cxxfunction( , '#
+| arma::mat x(2,2) ;#
+| NumericMatrix res = wrap( x + x ) ;#
+| return res ;#
+| ', plugin = "RcppArmadillo", verbose = TRUE )
+require(inline)
+#
+ f <- cxxfunction( , '#
+ arma::mat x(2,2) ;#
+ NumericMatrix res = wrap( x + x ) ;#
+ return res ;#
+ ', plugin = "RcppArmadillo", verbose = TRUE )
+quit()
+.equal
+all.equal()
+help(all.equal())
+help(all.equal)
+quit()
+install.packages(
+)
+library(pcalg)
+library(graph)
+install.packages()
+library(inline)#
+bod <-#
+  '#
+  // now this main will be implemented as the skeleton function! :p#
+  #
+  int p = as<int>(pt);#
+  double alpha = as<double>(alphat);#
+  int m_max = as<int>(m_maxt);#
+  NumericMatrix Corr(C);#
+  #
+  //using c++ datatypes and trying to write all functions myself, #
+  //i.e. not calling R from c++#
+  //how to store graph? Use matrix?#
+  bool G[p*p];// only store upper triangle? -> store as vector?#
+  #
+  //all connections exist#
+#
+  initialiseGraph(G,p);#
+#
+  int row = 0;// the current row we are studying the connections of#
+  int connections[p-1]; // stores the connections the current row has (maximum p-1)#
+  //static allocation ==> efficient#
+  int sizeothers,x,y;#
+  double pval;#
+  #
+  for (int ord = 0; ord <= m_max; ++ord)#
+    {#
+      //look for next row with connections then iterate over the remaining connections#
+      //alternative: save all connections explicitly in double array and loop over those.#
+#
+      row = getNextRowWithConnections(row,G,p); // row == x#
+      x = row;#
+      #
+      while(row != -1)#
+	{#
+	  getRowConnections(row,G,p,connections); // getting the connections belonging to the row#
+	  for (int i = 0; i < p-1; ++i)#
+	    {#
+	      //one of the remaining edge tests#
+	      y=connections[i];#
+	      #
+	      //so now we are gonna check the correlation between row and connections[i]#
+	      //in respect to every other subset of lengths ord of the remaining connections#
+	      if(y == -1) break;//reached end of connections#
+	      //y == connections[i]#
+	      std::vector<int> others = getOtherConnections(i,connections,p);#
+	      sizeothers = others.size();#
+	      if (sizeothers < ord)#
+		{#
+		  continue;//goto next loop iteration#
+		}#
+	      #
+	      //initial subset, TODO is there a more efficient way? Builtin way for this?#
+	      std::vector<int> subset(getSeqVector(ord));#
+	      cout<<"vector address " << subset<<endl;#
+	     cout<< "while test subset[0] =" << subset[1] << endl;#
+	      while(subset[0] != -1)#
+		{#
+cout << "got in while loop" << endl;#
+		  std::vector<int> k = getSubset(others,subset); //does this work? check! otherwise write own function that does this.#
+		  //pval = pcorOrder(x,y,k,C)#
+		  pval = pcorOrder(x,y,k,Corr);#
+		  #
+		  if (pval >= alpha)#
+		    {#
+		      //independent#
+		      G[x,y]=false;G[y,x]=false;#
+		      break; //no more checking to be done#
+		    }#
+		  #
+		  subset = getNextSet(sizeothers,ord,subset);#
+		}#
+	      #
+	    }#
+	  row = getNextRowWithConnections(row+1,G,p);#
+	}#
+    }#
+  #
+  //convert G to a logicalMatrix for returning to R?#
+  #
+  #
+  return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object#
+'#
+#
+inc <- '#
+#include <iostream>#
+#include <algorithm>#
+//#include <Rcpp.h>#
+#include <vector>#
+#
+/**#
+ *Copyright (C) 2011  Ruben Dezeure#
+ *Contact: dezeurer@student.ethz.ch#
+ *#
+ *This program is free software; you can redistribute it and/or#
+ *modify it under the terms of the GNU General Public License#
+ *as published by the Free Software Foundation; either version 2#
+ *of the License, or (at your option) any later version.#
+ *#
+ *This program is distributed in the hope that it will be useful,#
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of#
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the#
+ *GNU General Public License for more details.#
+ *#
+ *You should have received a copy of the GNU General Public License#
+ *along with this program; if not, write to the Free Software#
+ *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.#
+ **/#
+#
+/**#
+ *code from Alain Hauser#
+ *to get submatrices#
+ *not very fast, try to speed up/ optimise yourself!#
+ *ALTERNATIVE: use the method eleme of the armadillo matrix class#
+ *from mail {\"elem\" returns a vector, so you should then reshape its elements into a matrix #
+ *using one of the member functions \"reshape\" or \"set_size\". #
+ *I have, however, never used that approach, but I think it should work as described.}#
+ **/#
+#
+namespace arma{#
+#
+template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,InputIterator firstRow, InputIterator lastRow,InputIterator firstCol, InputIterator lastCol)#
+  {#
+    Mat<T> result(std::distance(firstRow, lastRow), std::distance(firstCol, lastCol));#
+    InputIterator row, col;#
+    unsigned int i = 0;#
+    unsigned int j = 0;#
+#
+    for (row = firstRow; row != lastRow; ++i, ++row) {#
+      j = 0;#
+      for (col = firstCol; col != lastCol; ++j, ++col)#
+	result(i, j) = input(*row, *col);#
+    }#
+#
+    return result;#
+  }#
+#
+  /**#
+   * Help function to extract arbitrary subvectors#
+   */#
+  template <typename T, typename InputIterator> Col<T> subvec(const Mat<T>& input,InputIterator firstRow, InputIterator lastRow,const unsigned int colind)#
+  {#
+    Col<T> result(std::distance(firstRow, lastRow));#
+    unsigned int i = 0;#
+#
+    for (; firstRow != lastRow; ++i, ++firstRow)#
+      result(i) = input(*firstRow, colind);#
+#
+    return result;#
+  }#
+}#
+using namespace std;#
+#
+#
+/**#
+ *This function calculates partial correlation of i and j given the set k#
+ * C is the correlation matrix among nodes#
+ */#
+double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)#
+{#
+  cout<< " pcorOrder" <<endl;#
+  double r;#
+  double cutat = 0.99999;#
+  #
+  if (k.size() == 0)#
+    {#
+      r = Corr(i,j);#
+      #
+    } #
+  /**#
+   //optimization for the case k.size() ==1 #
+    else if(k.size() ==1)#
+    {#
+      //no match for call to Rcpp::NumericMatrix with (int,vector<int>)#
+      #
+      //use vector product calls and power taking and so on ...#
+      //maybe use armadillo for this?#
+      #
+      r = (Corr(i,j)-Corr(i,k)*Corr(j,k))/sqrt((1-pow(Corr(j,k),2))*(1-Corr(i,k)^2));#
+      }*/ #
+  else#
+    {#
+      // push_front only works on integervector of rcpp library, #
+      // maybe better to use stl vectors#
+      //k.push_front(j);#
+      //k.push_front(i);#
+      //NumericMatrix sub = C(k,k);#
+      #
+      int m=Corr.nrow(),n=Corr.ncol();#
+      arma::mat C(Corr.begin(),m,n,false);//reuses memory and avoids extra copy#
+      //need an efficient way to get the submatrix off of this. Problem is that i j k not #
+      //really represent a range of consecutive rows and columns :/#
+      //use Rinside? look at presentation a LOT of overhead#
+      #
+      //      arma::mat sub = C[c(i,j,k),c(i,j,k)]#
+      std::vector<int> rows(k.size()+2);#
+      int l =0; // index in rows vector#
+      rows[l] = i; #
+      l++;#
+      rows[l] = j; #
+      l++;#
+      #
+      std::vector<int>::iterator row;#
+ #
+      for (row = k.begin(); row !=k.end();++row)#
+	{#
+	  rows[l] = *row;#
+	  l++;#
+	}#
+      #
+      std::vector<int> cols = rows;#
+      #
+      arma::mat sub = arma::submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());#
+      arma::mat PM;#
+      #
+       try#
+	{#
+          PM = arma::inv(sub);#
+	}#
+      catch(runtime_error re)#
+	{#
+          cout << "Caught error yes mam!" << endl;#
+	  //the matrix appears to be singular#
+	  cout << sub.size() << endl;#
+	}#
+      //the correlation matrix is always a positive semi definite matrix#
+      //inverse can be done faster if the matrix is a positive definite symmetric matrix#
+      //we specify this so: inv( sympd(sub) )#
+		    #
+      //PM <- pseudoinverse(C(c(i,j,k),c(i,j,k)))#
+      //return -PM[1,2]/sqrt(PM[1,1]*PM[2,2]);#
+      r = -PM(1,2)/sqrt(PM(1,1)*PM(2,2));      #
+      //r <- -PM(1,2)/sqrt(PM(1,1)*PM(2,2))#
+      //invert matrix better done by rcpparmadillo instead of calling the R function#
+      //not much improvement expected calling the R function :p. maybe good for comparison#
+    }#
+  //if(is.na(r)) r<-0#
+  if(R_IsNA(r))#
+    r = 0;#
+  #
+  //min(cut.at,max(-cut.at,r))#
+#
+  return min(cutat,max(-cutat,r));#
+}#
+#
+#
+/**#
+ * Generate the next set in a list of all possible sets of size k out of 1:n#
+ * #
+ */#
+std::vector<int> getNextSet(int n, int k,std::vector<int> previous)#
+{#
+ /** initial implementation purely based on the R code, might be a faster way to do this*/#
+   cout<< " getnextset" <<endl;#
+#
+  int sum = 0;#
+  std::vector<int>::iterator row;#
+  int iter = n-k+1;#
+  #
+  for (row = previous.begin(); row !=previous.end();++iter,++row)#
+    {#
+      sum += (iter - *row == 0);#
+    }#
+#
+  int chInd = k-sum;#
+  chInd = chInd -1; //working with c++ indexing, not R here#
+  cout << "chInd = "<< chInd << endl;#
+  cout << "k= " << k << " sum = " << sum << endl;#
+  #
+  if(chInd == 0)#
+    {#
+      //was last set to check#
+      previous[0]=-1; //marks finished#
+    }else#
+    {#
+      //there is still a set to go#
+      cout << "there is still a set to go"<<endl;#
+      previous[chInd] =  previous[chInd] +1;#
+      //do we need this really? Yes to cover all subsets!#
+      if (chInd < k)#
+      {#
+	for (int i = chInd+1; i < k; ++i)#
+	  {#
+	    previous[i]=previous[i-1] + 1;#
+	  }#
+      }#
+    }#
+  return previous;#
+}#
+#
+/**#
+ * initialise our graph with all connections on#
+ *#
+ *#
+ */#
+void initialiseGraph(bool G[],int p)#
+{#
+  cout<< "initialisegraph" <<endl;#
+#
+  for (int i = 0; i < p*p; ++i)#
+    {#
+      G[i] = true;#
+    }#
+#
+  for (int i = 0; i < p; ++i)#
+    {#
+      //diagonal connections obviously don\'t exist#
+      G[i*p+i] = false;#
+    }#
+}#
+#
+/**#
+ * any method looks if there is still a connection in the graph matrix#
+ */#
+bool any(bool G[],int p)#
+{#
+  cout<< "any" <<endl;#
+#
+  for (int i = 0; i < p*p; ++i)#
+    {#
+      if (G[i] == true)#
+	{#
+	  return true;#
+	}#
+    }#
+}#
+#
+/**#
+ * row = the row from which we want the connections in the graph#
+ * G = the graph#
+ * p = the number of rows#
+ * returns a integer vector containing the connections of the next #
+ * row that still has connections.#
+ * -1 signals end of connections#
+ */#
+void getRowConnections(int row,bool G[],int p,int* connections)#
+{#
+  cout<< "getrowconnections" <<endl;#
+#
+  int index = 0;//keeping track of the index in the connections vector#
+  #
+  //there is still a row >= startrow with connections#
+  for (int j = 0; j < p; ++j)#
+    {#
+      if (G[row*p+j] == true)#
+	{#
+	  connections[index] = j;#
+	  index++;  #
+	}#
+    }#
+  #
+  if (index != p-1)#
+    {#
+      //we didn\'t have p-1 connections#
+      connections[index+1] = -1; // signal end#
+    }#
+#
+  return;#
+}#
+#
+/**#
+ * startrow = the row from which to start looking for a row with connections in the graph#
+ * G = the graph#
+ * p = the number of rows#
+ * returns an integer value that says which row still has connections#
+ */#
+int getNextRowWithConnections(int startrow,bool G[],int p)#
+{#
+  cout<< "getnextrowwithconnections" <<endl;#
+#
+  for (int row = startrow; row < p; ++row)#
+    {#
+      for (int i = row; i < p; ++i)#
+	{#
+	  //only search through the upper triangular#
+	  if(G[row*p+i] == true)#
+	    {#
+	      //we have a hit!#
+	      return row;#
+	    }#
+	}#
+    }#
+  #
+  //seems like there are no more rows >= startrows containing connections#
+  return -1;#
+}#
+#
+/**#
+ * get the other connection when excluding y#
+ */#
+std::vector<int> getOtherConnections(int j,int* connections,int p)#
+{#
+  cout<< "getotherconnections" <<endl;#
+#
+  std::vector<int> others(0);#
+#
+  for (int i = 0; i < p-1; ++i)#
+    {#
+      if (connections[i] == -1) break;#
+#
+      //we don\'t want y==connections[j] in here#
+      if (i != j)#
+	{#
+	  others.push_back(connections[i]);#
+	}#
+    }#
+  #
+  return others;#
+}#
+#
+/**#
+ * Creates a vector of size ord with elements 1:ord#
+ *#
+ */#
+std::vector<int> getSeqVector(int ord)#
+{#
+  cout<< "getseqvector" <<endl;#
+#
+  std::vector<int> seq(ord);#
+  for (int i = 0; i < ord; ++i)#
+    {#
+      seq[i] = i+1;#
+    }#
+    cout << "endseqvector" << endl;#
+  return seq;#
+}#
+#
+/**#
+ *Get a subset of a vector with the subset signalled by the indices in the vector subset#
+ *#
+ */#
+std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)#
+{#
+  cout<< "getSubset" <<endl;#
+#
+  std::vector<int> subset(subsetind.size(),0);#
+  for (int i = 0; i < subsetind.size(); ++i)#
+    {#
+      subset[i] = set[subsetind[i]];#
+    }#
+  return subset;#
+}#
+#
+/**#
+ *converts the boolian matrix to a logical matrix so we can easily return it to R#
+ */#
+LogicalMatrix convertToLogical(bool G[],int p)#
+{#
+  LogicalMatrix log(p,p);#
+  #
+  for (int i = 0; i < p; ++i)#
+    {#
+      for (int j = 0; j<p; ++j)#
+	{#
+	  log(i,j) = G[i*p+j];#
+	}#
+    }#
+  return log;#
+  #
+}#
+#
+'#
+#
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body = bod,includes=inc,plugin="RcppArmadillo")#
+sizem <- 100#
+mat <- matrix(0.01*rnorm(sizem*sizem),sizem,sizem)#
+diag(mat) <- 0#
+#
+Crr <- diag(sizem) + mat#
+#fun(Crr)
+library(pcalg)#
+#
+## NOTE: Usually, we would ESTIMATE the correlation matrix; but since we are#
+## only interested in the runtime performance, we can use the true correlation#
+## matrix#
+#
+myTrueCor <- function(g)#
+{#
+  ## Purpose: Compute true correlation matrix of graph#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - g: graph object#
+  ## ----------------------------------------------------------------------#
+  ## Value: True correlation matrix corresponding to graph#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 09:05#
+  a <- t(as(g, "matrix"))#
+  p <- ncol(a)#
+  m <- solve(diag(p) - a)#
+  cov2cor( m %*% t(m) )#
+}#
+#
+makeGraph <- function(p, en, seed = NULL)#
+{#
+  ## Purpose: Generate a graph and produce corresponding skeleton and#
+  ## true covariance matrix of nodes#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - p: number of nodes (= gaussian random variable)#
+  ## - en: expected number of neighbors for each node#
+  ## - seed: seed for random number generator#
+  ## ----------------------------------------------------------------------#
+  ## Value: List with two elements#
+  ## - skel: adjacency matrix of skeleton as matrix (should be recovered)#
+  ## - corMat: True correlation matrix of all nodes (input for skeleton function)#
+  ## - g: generated graph object#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 08:36#
+#
+s <- en/(p-1)#
+if (is.null(seed)) seed <- sample(10^4,1)#
+set.seed(seed)#
+rDAG <- randomDAG(p, prob = s, lB=0.1, uB=1)#
+amat <- as(rDAG, "matrix") + t(as(rDAG, "matrix"))#
+amat[amat != 0] <- 1#
+corMat <- myTrueCor(rDAG)#
+#
+list(skel = amat, corMat = corMat, g = rDAG)#
+}#
+#
+estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)#
+{#
+  ## Purpose: Estimate the skeleton#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - corMat: Correlation Matrix of true graph#
+  ## - n: Number of samples that were used to estimate corMat#
+  ## (since we use the true cor. matrix, n = infinity; for numerical reasons,#
+  ## we use n = 10^15; this is a bit quick and dirty, but should work for#
+  ## almost all cases...)#
+  ## - alpha: Sign. level to test the presence of an edge#
+  ## ----------------------------------------------------------------------#
+  ## Value: Estimated adjacency matrix#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 08:40#
+#
+  p <- ncol(corMat)#
+  ## define independence test (partial correlations)#
+  indepTest <- gaussCItest#
+  ## define sufficient statistics#
+  suffStat <- list(C = corMat, n = n)#
+  ##skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)#
+  skeleton.fit <- funskeleton(p,alpha,10000,corMat)#
+  as(skeleton.fit@graph, "matrix")#
+}#
+#
+## TEST 1: Some random graphs of rather small size - true cor. mat#
+nreps <- 100#
+ok <- rep(NA, nreps)#
+p <- 10#
+en <- 3#
+i <- 1#
+cat("i = ",i,"\n")#
+  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+  #
+##for (i in 1:nreps) {#
+##  cat("i = ",i,"\n")#
+##  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+##  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)#
+##}#
+#
+## TEST 2: Some random graphs of rather small size - est. cor. mat#
+## This should be faster, since the estimated cor. mat contains errors#
+## that make the algo stop too early#
+##ok <- rep(NA, nreps)#
+##p <- 10#
+##n <- 1000#
+##en <- 3#
+##for (i in 1:nreps) {#
+##  cat("i = ",i,"\n")#
+##  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+##  corMat <- cor(rmvDAG(n, tmp$g)) ## generate data and estimate cor. matrix#
+##  res <- estSkel(corMat, n = n) ## estimate skel #
+##  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH ESTIMATE (res)#
+##}#
+#
+## TEST 3: Empty graph#
+##p <- 10#
+##tmp <- makeGraph(p, 0, seed = 42) ## generate skeleton and true cor. matrix#
+##res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##all(tmp$skel == res)#
+#
+## TEST 4: Complete graph#
+##p <- 5#
+##tmp <- makeGraph(p, p-1, seed = 42) ## generate skeleton and true cor. matrix#
+##res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##all(tmp$skel == res)
+library(inline)#
+bod <-#
+  '#
+  // now this main will be implemented as the skeleton function! :p#
+  #
+  int p = as<int>(pt);#
+  double alpha = as<double>(alphat);#
+  int m_max = as<int>(m_maxt);#
+  NumericMatrix Corr(C);#
+  #
+  //using c++ datatypes and trying to write all functions myself, #
+  //i.e. not calling R from c++#
+  //how to store graph? Use matrix?#
+  bool G[p*p];// only store upper triangle? -> store as vector?#
+  #
+  //all connections exist#
+#
+  initialiseGraph(G,p);#
+#
+  int row = 0;// the current row we are studying the connections of#
+  int connections[p-1]; // stores the connections the current row has (maximum p-1)#
+  //static allocation ==> efficient#
+  int sizeothers,x,y;#
+  double pval;#
+  #
+  for (int ord = 0; ord <= m_max; ++ord)#
+    {#
+      //look for next row with connections then iterate over the remaining connections#
+      //alternative: save all connections explicitly in double array and loop over those.#
+#
+      row = getNextRowWithConnections(row,G,p); // row == x#
+      x = row;#
+      #
+      while(row != -1)#
+	{#
+	  getRowConnections(row,G,p,connections); // getting the connections belonging to the row#
+	  for (int i = 0; i < p-1; ++i)#
+	    {#
+	      //one of the remaining edge tests#
+	      y=connections[i];#
+	      #
+	      //so now we are gonna check the correlation between row and connections[i]#
+	      //in respect to every other subset of lengths ord of the remaining connections#
+	      if(y == -1) break;//reached end of connections#
+	      //y == connections[i]#
+	      std::vector<int> others = getOtherConnections(i,connections,p);#
+	      sizeothers = others.size();#
+	      if (sizeothers < ord)#
+		{#
+		  continue;//goto next loop iteration#
+		}#
+	      #
+	      //initial subset, TODO is there a more efficient way? Builtin way for this?#
+	      std::vector<int> subset(getSeqVector(ord));#
+	      cout<<"vector address " << subset<<endl;#
+	     cout<< "while test subset[0] =" << subset[1] << endl;#
+	      while(subset[0] != -1)#
+		{#
+cout << "got in while loop" << endl;#
+		  std::vector<int> k = getSubset(others,subset); //does this work? check! otherwise write own function that does this.#
+		  //pval = pcorOrder(x,y,k,C)#
+		  pval = pcorOrder(x,y,k,Corr);#
+		  #
+		  if (pval >= alpha)#
+		    {#
+		      //independent#
+		      G[x,y]=false;G[y,x]=false;#
+		      break; //no more checking to be done#
+		    }#
+		  #
+		  subset = getNextSet(sizeothers,ord,subset);#
+		}#
+	      #
+	    }#
+	  row = getNextRowWithConnections(row+1,G,p);#
+	}#
+    }#
+  #
+  //convert G to a logicalMatrix for returning to R?#
+  #
+  #
+  return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object#
+'#
+#
+inc <- '#
+#include <iostream>#
+#include <algorithm>#
+//#include <Rcpp.h>#
+#include <vector>#
+#
+/**#
+ *Copyright (C) 2011  Ruben Dezeure#
+ *Contact: dezeurer@student.ethz.ch#
+ *#
+ *This program is free software; you can redistribute it and/or#
+ *modify it under the terms of the GNU General Public License#
+ *as published by the Free Software Foundation; either version 2#
+ *of the License, or (at your option) any later version.#
+ *#
+ *This program is distributed in the hope that it will be useful,#
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of#
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the#
+ *GNU General Public License for more details.#
+ *#
+ *You should have received a copy of the GNU General Public License#
+ *along with this program; if not, write to the Free Software#
+ *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.#
+ **/#
+#
+/**#
+ *code from Alain Hauser#
+ *to get submatrices#
+ *not very fast, try to speed up/ optimise yourself!#
+ *ALTERNATIVE: use the method eleme of the armadillo matrix class#
+ *from mail {\"elem\" returns a vector, so you should then reshape its elements into a matrix #
+ *using one of the member functions \"reshape\" or \"set_size\". #
+ *I have, however, never used that approach, but I think it should work as described.}#
+ **/#
+#
+namespace arma{#
+#
+template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,InputIterator firstRow, InputIterator lastRow,InputIterator firstCol, InputIterator lastCol)#
+  {#
+    Mat<T> result(std::distance(firstRow, lastRow), std::distance(firstCol, lastCol));#
+    InputIterator row, col;#
+    unsigned int i = 0;#
+    unsigned int j = 0;#
+#
+    for (row = firstRow; row != lastRow; ++i, ++row) {#
+      j = 0;#
+      for (col = firstCol; col != lastCol; ++j, ++col)#
+	result(i, j) = input(*row, *col);#
+    }#
+#
+    return result;#
+  }#
+#
+  /**#
+   * Help function to extract arbitrary subvectors#
+   */#
+  template <typename T, typename InputIterator> Col<T> subvec(const Mat<T>& input,InputIterator firstRow, InputIterator lastRow,const unsigned int colind)#
+  {#
+    Col<T> result(std::distance(firstRow, lastRow));#
+    unsigned int i = 0;#
+#
+    for (; firstRow != lastRow; ++i, ++firstRow)#
+      result(i) = input(*firstRow, colind);#
+#
+    return result;#
+  }#
+}#
+using namespace std;#
+#
+#
+/**#
+ *This function calculates partial correlation of i and j given the set k#
+ * C is the correlation matrix among nodes#
+ */#
+double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)#
+{#
+  cout<< " pcorOrder" <<endl;#
+  double r;#
+  double cutat = 0.99999;#
+  #
+  if (k.size() == 0)#
+    {#
+      r = Corr(i,j);#
+      #
+    } #
+  /**#
+   //optimization for the case k.size() ==1 #
+    else if(k.size() ==1)#
+    {#
+      //no match for call to Rcpp::NumericMatrix with (int,vector<int>)#
+      #
+      //use vector product calls and power taking and so on ...#
+      //maybe use armadillo for this?#
+      #
+      r = (Corr(i,j)-Corr(i,k)*Corr(j,k))/sqrt((1-pow(Corr(j,k),2))*(1-Corr(i,k)^2));#
+      }*/ #
+  else#
+    {#
+      // push_front only works on integervector of rcpp library, #
+      // maybe better to use stl vectors#
+      //k.push_front(j);#
+      //k.push_front(i);#
+      //NumericMatrix sub = C(k,k);#
+      #
+      int m=Corr.nrow(),n=Corr.ncol();#
+      arma::mat C(Corr.begin(),m,n,false);//reuses memory and avoids extra copy#
+      //need an efficient way to get the submatrix off of this. Problem is that i j k not #
+      //really represent a range of consecutive rows and columns :/#
+      //use Rinside? look at presentation a LOT of overhead#
+      #
+      //      arma::mat sub = C[c(i,j,k),c(i,j,k)]#
+      std::vector<int> rows(k.size()+2);#
+      int l =0; // index in rows vector#
+      rows[l] = i; #
+      l++;#
+      rows[l] = j; #
+      l++;#
+      #
+      std::vector<int>::iterator row;#
+ #
+      for (row = k.begin(); row !=k.end();++row)#
+	{#
+	  rows[l] = *row;#
+	  l++;#
+	}#
+      #
+      std::vector<int> cols = rows;#
+      #
+      arma::mat sub = arma::submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());#
+      arma::mat PM;#
+      #
+       try#
+	{#
+          PM = arma::inv(sub);#
+	}#
+      catch(runtime_error re)#
+	{#
+          cout << "Caught error yes mam!" << endl;#
+	  //the matrix appears to be singular#
+	  cout << sub.size() << endl;#
+	}#
+      //the correlation matrix is always a positive semi definite matrix#
+      //inverse can be done faster if the matrix is a positive definite symmetric matrix#
+      //we specify this so: inv( sympd(sub) )#
+		    #
+      //PM <- pseudoinverse(C(c(i,j,k),c(i,j,k)))#
+      //return -PM[1,2]/sqrt(PM[1,1]*PM[2,2]);#
+      r = -PM(1,2)/sqrt(PM(1,1)*PM(2,2));      #
+      //r <- -PM(1,2)/sqrt(PM(1,1)*PM(2,2))#
+      //invert matrix better done by rcpparmadillo instead of calling the R function#
+      //not much improvement expected calling the R function :p. maybe good for comparison#
+    }#
+  //if(is.na(r)) r<-0#
+  if(R_IsNA(r))#
+    r = 0;#
+  #
+  //min(cut.at,max(-cut.at,r))#
+#
+  return min(cutat,max(-cutat,r));#
+}#
+#
+#
+/**#
+ * Generate the next set in a list of all possible sets of size k out of 1:n#
+ * #
+ */#
+std::vector<int> getNextSet(int n, int k,std::vector<int> previous)#
+{#
+ /** initial implementation purely based on the R code, might be a faster way to do this*/#
+   cout<< " getnextset" <<endl;#
+#
+  int sum = 0;#
+  std::vector<int>::iterator row;#
+  int iter = n-k+1;#
+  #
+  for (row = previous.begin(); row !=previous.end();++iter,++row)#
+    {#
+      sum += (iter - *row == 0);#
+    }#
+#
+  int chInd = k-sum;#
+  chInd = chInd -1; //working with c++ indexing, not R here#
+  cout << "chInd = "<< chInd << endl;#
+  cout << "k= " << k << " sum = " << sum << endl;#
+  #
+  if(chInd == 0)#
+    {#
+      //was last set to check#
+      previous[0]=-1; //marks finished#
+    }else#
+    {#
+      //there is still a set to go#
+      cout << "there is still a set to go"<<endl;#
+      previous[chInd] =  previous[chInd] +1;#
+      //do we need this really? Yes to cover all subsets!#
+      if (chInd < k)#
+      {#
+	for (int i = chInd+1; i < k; ++i)#
+	  {#
+	    previous[i]=previous[i-1] + 1;#
+	  }#
+      }#
+    }#
+  return previous;#
+}#
+#
+/**#
+ * initialise our graph with all connections on#
+ *#
+ *#
+ */#
+void initialiseGraph(bool G[],int p)#
+{#
+  cout<< "initialisegraph" <<endl;#
+#
+  for (int i = 0; i < p*p; ++i)#
+    {#
+      G[i] = true;#
+    }#
+#
+  for (int i = 0; i < p; ++i)#
+    {#
+      //diagonal connections obviously don\'t exist#
+      G[i*p+i] = false;#
+    }#
+}#
+#
+/**#
+ * any method looks if there is still a connection in the graph matrix#
+ */#
+bool any(bool G[],int p)#
+{#
+  cout<< "any" <<endl;#
+#
+  for (int i = 0; i < p*p; ++i)#
+    {#
+      if (G[i] == true)#
+	{#
+	  return true;#
+	}#
+    }#
+}#
+#
+/**#
+ * row = the row from which we want the connections in the graph#
+ * G = the graph#
+ * p = the number of rows#
+ * returns a integer vector containing the connections of the next #
+ * row that still has connections.#
+ * -1 signals end of connections#
+ */#
+void getRowConnections(int row,bool G[],int p,int* connections)#
+{#
+  cout<< "getrowconnections" <<endl;#
+#
+  int index = 0;//keeping track of the index in the connections vector#
+  #
+  //there is still a row >= startrow with connections#
+  for (int j = 0; j < p; ++j)#
+    {#
+      if (G[row*p+j] == true)#
+	{#
+	  connections[index] = j;#
+	  index++;  #
+	}#
+    }#
+  #
+  if (index != p-1)#
+    {#
+      //we didn\'t have p-1 connections#
+      connections[index+1] = -1; // signal end#
+    }#
+#
+  return;#
+}#
+#
+/**#
+ * startrow = the row from which to start looking for a row with connections in the graph#
+ * G = the graph#
+ * p = the number of rows#
+ * returns an integer value that says which row still has connections#
+ */#
+int getNextRowWithConnections(int startrow,bool G[],int p)#
+{#
+  cout<< "getnextrowwithconnections" <<endl;#
+#
+  for (int row = startrow; row < p; ++row)#
+    {#
+      for (int i = row; i < p; ++i)#
+	{#
+	  //only search through the upper triangular#
+	  if(G[row*p+i] == true)#
+	    {#
+	      //we have a hit!#
+	      return row;#
+	    }#
+	}#
+    }#
+  #
+  //seems like there are no more rows >= startrows containing connections#
+  return -1;#
+}#
+#
+/**#
+ * get the other connection when excluding y#
+ */#
+std::vector<int> getOtherConnections(int j,int* connections,int p)#
+{#
+  cout<< "getotherconnections" <<endl;#
+#
+  std::vector<int> others(0);#
+#
+  for (int i = 0; i < p-1; ++i)#
+    {#
+      if (connections[i] == -1) break;#
+#
+      //we don\'t want y==connections[j] in here#
+      if (i != j)#
+	{#
+	  others.push_back(connections[i]);#
+	}#
+    }#
+  #
+  return others;#
+}#
+#
+/**#
+ * Creates a vector of size ord with elements 1:ord#
+ *#
+ */#
+std::vector<int> getSeqVector(int ord)#
+{#
+  cout<< "getseqvector" <<endl;#
+#
+  std::vector<int> seq(ord);#
+  for (int i = 0; i < ord; ++i)#
+    {#
+      seq[i] = i+1;#
+    }#
+    cout << "endseqvector" << endl;#
+  return seq;#
+}#
+#
+/**#
+ *Get a subset of a vector with the subset signalled by the indices in the vector subset#
+ *#
+ */#
+std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)#
+{#
+  cout<< "getSubset" <<endl;#
+#
+  std::vector<int> subset(subsetind.size(),0);#
+  for (int i = 0; i < subsetind.size(); ++i)#
+    {#
+      subset[i] = set[subsetind[i]];#
+    }#
+  return subset;#
+}#
+#
+/**#
+ *converts the boolian matrix to a logical matrix so we can easily return it to R#
+ */#
+LogicalMatrix convertToLogical(bool G[],int p)#
+{#
+  LogicalMatrix log(p,p);#
+  #
+  for (int i = 0; i < p; ++i)#
+    {#
+      for (int j = 0; j<p; ++j)#
+	{#
+	  log(i,j) = G[i*p+j];#
+	}#
+    }#
+  return log;#
+  #
+}#
+#
+'#
+#
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body = bod,includes=inc,plugin="RcppArmadillo")#
+sizem <- 100#
+mat <- matrix(0.01*rnorm(sizem*sizem),sizem,sizem)#
+diag(mat) <- 0#
+#
+Crr <- diag(sizem) + mat#
+#fun(Crr)
+library(inline)#
+bod <-#
+  '#
+  // now this main will be implemented as the skeleton function! :p#
+  #
+  int p = as<int>(pt);#
+  double alpha = as<double>(alphat);#
+  int m_max = as<int>(m_maxt);#
+  NumericMatrix Corr(C);#
+  #
+  //using c++ datatypes and trying to write all functions myself, #
+  //i.e. not calling R from c++#
+  //how to store graph? Use matrix?#
+  bool G[p*p];// only store upper triangle? -> store as vector?#
+  #
+  //all connections exist#
+#
+  initialiseGraph(G,p);#
+#
+  int row = 0;// the current row we are studying the connections of#
+  int connections[p-1]; // stores the connections the current row has (maximum p-1)#
+  //static allocation ==> efficient#
+  int sizeothers,x,y;#
+  double pval;#
+  #
+  for (int ord = 0; ord <= m_max; ++ord)#
+    {#
+      //look for next row with connections then iterate over the remaining connections#
+      //alternative: save all connections explicitly in double array and loop over those.#
+#
+      row = getNextRowWithConnections(row,G,p); // row == x#
+      x = row;#
+      #
+      while(row != -1)#
+	{#
+	  getRowConnections(row,G,p,connections); // getting the connections belonging to the row#
+	  for (int i = 0; i < p-1; ++i)#
+	    {#
+	      //one of the remaining edge tests#
+	      y=connections[i];#
+	      #
+	      //so now we are gonna check the correlation between row and connections[i]#
+	      //in respect to every other subset of lengths ord of the remaining connections#
+	      if(y == -1) break;//reached end of connections#
+	      //y == connections[i]#
+	      std::vector<int> others = getOtherConnections(i,connections,p);#
+	      sizeothers = others.size();#
+	      if (sizeothers < ord)#
+		{#
+		  continue;//goto next loop iteration#
+		}#
+	      #
+	      //initial subset, TODO is there a more efficient way? Builtin way for this?#
+	      std::vector<int> subset(getSeqVector(ord));#
+	      cout << "vector address " << subset << endl;#
+	     cout<< "while test subset[0] =" << subset[1] << endl;#
+	      while(subset[0] != -1)#
+		{#
+cout << "got in while loop" << endl;#
+		  std::vector<int> k = getSubset(others,subset); //does this work? check! otherwise write own function that does this.#
+		  //pval = pcorOrder(x,y,k,C)#
+		  pval = pcorOrder(x,y,k,Corr);#
+		  #
+		  if (pval >= alpha)#
+		    {#
+		      //independent#
+		      G[x,y]=false;G[y,x]=false;#
+		      break; //no more checking to be done#
+		    }#
+		  #
+		  subset = getNextSet(sizeothers,ord,subset);#
+		}#
+	      #
+	    }#
+	  row = getNextRowWithConnections(row+1,G,p);#
+	}#
+    }#
+  #
+  //convert G to a logicalMatrix for returning to R?#
+  #
+  #
+  return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object#
+'#
+#
+inc <- '#
+#include <iostream>#
+#include <algorithm>#
+//#include <Rcpp.h>#
+#include <vector>#
+#
+/**#
+ *Copyright (C) 2011  Ruben Dezeure#
+ *Contact: dezeurer@student.ethz.ch#
+ *#
+ *This program is free software; you can redistribute it and/or#
+ *modify it under the terms of the GNU General Public License#
+ *as published by the Free Software Foundation; either version 2#
+ *of the License, or (at your option) any later version.#
+ *#
+ *This program is distributed in the hope that it will be useful,#
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of#
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the#
+ *GNU General Public License for more details.#
+ *#
+ *You should have received a copy of the GNU General Public License#
+ *along with this program; if not, write to the Free Software#
+ *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.#
+ **/#
+#
+/**#
+ *code from Alain Hauser#
+ *to get submatrices#
+ *not very fast, try to speed up/ optimise yourself!#
+ *ALTERNATIVE: use the method eleme of the armadillo matrix class#
+ *from mail {\"elem\" returns a vector, so you should then reshape its elements into a matrix #
+ *using one of the member functions \"reshape\" or \"set_size\". #
+ *I have, however, never used that approach, but I think it should work as described.}#
+ **/#
+#
+namespace arma{#
+#
+template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,InputIterator firstRow, InputIterator lastRow,InputIterator firstCol, InputIterator lastCol)#
+  {#
+    Mat<T> result(std::distance(firstRow, lastRow), std::distance(firstCol, lastCol));#
+    InputIterator row, col;#
+    unsigned int i = 0;#
+    unsigned int j = 0;#
+#
+    for (row = firstRow; row != lastRow; ++i, ++row) {#
+      j = 0;#
+      for (col = firstCol; col != lastCol; ++j, ++col)#
+	result(i, j) = input(*row, *col);#
+    }#
+#
+    return result;#
+  }#
+#
+  /**#
+   * Help function to extract arbitrary subvectors#
+   */#
+  template <typename T, typename InputIterator> Col<T> subvec(const Mat<T>& input,InputIterator firstRow, InputIterator lastRow,const unsigned int colind)#
+  {#
+    Col<T> result(std::distance(firstRow, lastRow));#
+    unsigned int i = 0;#
+#
+    for (; firstRow != lastRow; ++i, ++firstRow)#
+      result(i) = input(*firstRow, colind);#
+#
+    return result;#
+  }#
+}#
+using namespace std;#
+#
+#
+/**#
+ *This function calculates partial correlation of i and j given the set k#
+ * C is the correlation matrix among nodes#
+ */#
+double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)#
+{#
+  cout<< " pcorOrder" <<endl;#
+  double r;#
+  double cutat = 0.99999;#
+  #
+  if (k.size() == 0)#
+    {#
+      r = Corr(i,j);#
+      #
+    } #
+  /**#
+   //optimization for the case k.size() ==1 #
+    else if(k.size() ==1)#
+    {#
+      //no match for call to Rcpp::NumericMatrix with (int,vector<int>)#
+      #
+      //use vector product calls and power taking and so on ...#
+      //maybe use armadillo for this?#
+      #
+      r = (Corr(i,j)-Corr(i,k)*Corr(j,k))/sqrt((1-pow(Corr(j,k),2))*(1-Corr(i,k)^2));#
+      }*/ #
+  else#
+    {#
+      // push_front only works on integervector of rcpp library, #
+      // maybe better to use stl vectors#
+      //k.push_front(j);#
+      //k.push_front(i);#
+      //NumericMatrix sub = C(k,k);#
+      #
+      int m=Corr.nrow(),n=Corr.ncol();#
+      arma::mat C(Corr.begin(),m,n,false);//reuses memory and avoids extra copy#
+      //need an efficient way to get the submatrix off of this. Problem is that i j k not #
+      //really represent a range of consecutive rows and columns :/#
+      //use Rinside? look at presentation a LOT of overhead#
+      #
+      //      arma::mat sub = C[c(i,j,k),c(i,j,k)]#
+      std::vector<int> rows(k.size()+2);#
+      int l =0; // index in rows vector#
+      rows[l] = i; #
+      l++;#
+      rows[l] = j; #
+      l++;#
+      #
+      std::vector<int>::iterator row;#
+ #
+      for (row = k.begin(); row !=k.end();++row)#
+	{#
+	  rows[l] = *row;#
+	  l++;#
+	}#
+      #
+      std::vector<int> cols = rows;#
+      #
+      arma::mat sub = arma::submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());#
+      arma::mat PM;#
+      #
+       try#
+	{#
+          PM = arma::inv(sub);#
+	}#
+      catch(runtime_error re)#
+	{#
+          cout << "Caught error yes mam!" << endl;#
+	  //the matrix appears to be singular#
+	  cout << sub.size() << endl;#
+	}#
+      //the correlation matrix is always a positive semi definite matrix#
+      //inverse can be done faster if the matrix is a positive definite symmetric matrix#
+      //we specify this so: inv( sympd(sub) )#
+		    #
+      //PM <- pseudoinverse(C(c(i,j,k),c(i,j,k)))#
+      //return -PM[1,2]/sqrt(PM[1,1]*PM[2,2]);#
+      r = -PM(1,2)/sqrt(PM(1,1)*PM(2,2));      #
+      //r <- -PM(1,2)/sqrt(PM(1,1)*PM(2,2))#
+      //invert matrix better done by rcpparmadillo instead of calling the R function#
+      //not much improvement expected calling the R function :p. maybe good for comparison#
+    }#
+  //if(is.na(r)) r<-0#
+  if(R_IsNA(r))#
+    r = 0;#
+  #
+  //min(cut.at,max(-cut.at,r))#
+#
+  return min(cutat,max(-cutat,r));#
+}#
+#
+#
+/**#
+ * Generate the next set in a list of all possible sets of size k out of 1:n#
+ * #
+ */#
+std::vector<int> getNextSet(int n, int k,std::vector<int> previous)#
+{#
+ /** initial implementation purely based on the R code, might be a faster way to do this*/#
+   cout<< " getnextset" <<endl;#
+#
+  int sum = 0;#
+  std::vector<int>::iterator row;#
+  int iter = n-k+1;#
+  #
+  for (row = previous.begin(); row !=previous.end();++iter,++row)#
+    {#
+      sum += (iter - *row == 0);#
+    }#
+#
+  int chInd = k-sum;#
+  chInd = chInd -1; //working with c++ indexing, not R here#
+  cout << "chInd = "<< chInd << endl;#
+  cout << "k= " << k << " sum = " << sum << endl;#
+  #
+  if(chInd == 0)#
+    {#
+      //was last set to check#
+      previous[0]=-1; //marks finished#
+    }else#
+    {#
+      //there is still a set to go#
+      cout << "there is still a set to go"<<endl;#
+      previous[chInd] =  previous[chInd] +1;#
+      //do we need this really? Yes to cover all subsets!#
+      if (chInd < k)#
+      {#
+	for (int i = chInd+1; i < k; ++i)#
+	  {#
+	    previous[i]=previous[i-1] + 1;#
+	  }#
+      }#
+    }#
+  return previous;#
+}#
+#
+/**#
+ * initialise our graph with all connections on#
+ *#
+ *#
+ */#
+void initialiseGraph(bool G[],int p)#
+{#
+  cout<< "initialisegraph" <<endl;#
+#
+  for (int i = 0; i < p*p; ++i)#
+    {#
+      G[i] = true;#
+    }#
+#
+  for (int i = 0; i < p; ++i)#
+    {#
+      //diagonal connections obviously don\'t exist#
+      G[i*p+i] = false;#
+    }#
+}#
+#
+/**#
+ * any method looks if there is still a connection in the graph matrix#
+ */#
+bool any(bool G[],int p)#
+{#
+  cout<< "any" <<endl;#
+#
+  for (int i = 0; i < p*p; ++i)#
+    {#
+      if (G[i] == true)#
+	{#
+	  return true;#
+	}#
+    }#
+}#
+#
+/**#
+ * row = the row from which we want the connections in the graph#
+ * G = the graph#
+ * p = the number of rows#
+ * returns a integer vector containing the connections of the next #
+ * row that still has connections.#
+ * -1 signals end of connections#
+ */#
+void getRowConnections(int row,bool G[],int p,int* connections)#
+{#
+  cout<< "getrowconnections" <<endl;#
+#
+  int index = 0;//keeping track of the index in the connections vector#
+  #
+  //there is still a row >= startrow with connections#
+  for (int j = 0; j < p; ++j)#
+    {#
+      if (G[row*p+j] == true)#
+	{#
+	  connections[index] = j;#
+	  index++;  #
+	}#
+    }#
+  #
+  if (index != p-1)#
+    {#
+      //we didn\'t have p-1 connections#
+      connections[index+1] = -1; // signal end#
+    }#
+#
+  return;#
+}#
+#
+/**#
+ * startrow = the row from which to start looking for a row with connections in the graph#
+ * G = the graph#
+ * p = the number of rows#
+ * returns an integer value that says which row still has connections#
+ */#
+int getNextRowWithConnections(int startrow,bool G[],int p)#
+{#
+  cout<< "getnextrowwithconnections" <<endl;#
+#
+  for (int row = startrow; row < p; ++row)#
+    {#
+      for (int i = row; i < p; ++i)#
+	{#
+	  //only search through the upper triangular#
+	  if(G[row*p+i] == true)#
+	    {#
+	      //we have a hit!#
+	      return row;#
+	    }#
+	}#
+    }#
+  #
+  //seems like there are no more rows >= startrows containing connections#
+  return -1;#
+}#
+#
+/**#
+ * get the other connection when excluding y#
+ */#
+std::vector<int> getOtherConnections(int j,int* connections,int p)#
+{#
+  cout<< "getotherconnections" <<endl;#
+#
+  std::vector<int> others(0);#
+#
+  for (int i = 0; i < p-1; ++i)#
+    {#
+      if (connections[i] == -1) break;#
+#
+      //we don\'t want y==connections[j] in here#
+      if (i != j)#
+	{#
+	  others.push_back(connections[i]);#
+	}#
+    }#
+  #
+  return others;#
+}#
+#
+/**#
+ * Creates a vector of size ord with elements 1:ord#
+ *#
+ */#
+std::vector<int> getSeqVector(int ord)#
+{#
+  cout<< "getseqvector" <<endl;#
+#
+  std::vector<int> seq(ord);#
+  for (int i = 0; i < ord; ++i)#
+    {#
+      seq[i] = i+1;#
+    }#
+    cout << "endseqvector" << endl;#
+  return seq;#
+}#
+#
+/**#
+ *Get a subset of a vector with the subset signalled by the indices in the vector subset#
+ *#
+ */#
+std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)#
+{#
+  cout<< "getSubset" <<endl;#
+#
+  std::vector<int> subset(subsetind.size(),0);#
+  for (int i = 0; i < subsetind.size(); ++i)#
+    {#
+      subset[i] = set[subsetind[i]];#
+    }#
+  return subset;#
+}#
+#
+/**#
+ *converts the boolian matrix to a logical matrix so we can easily return it to R#
+ */#
+LogicalMatrix convertToLogical(bool G[],int p)#
+{#
+  LogicalMatrix log(p,p);#
+  #
+  for (int i = 0; i < p; ++i)#
+    {#
+      for (int j = 0; j<p; ++j)#
+	{#
+	  log(i,j) = G[i*p+j];#
+	}#
+    }#
+  return log;#
+  #
+}#
+#
+'#
+#
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body = bod,includes=inc,plugin="RcppArmadillo")#
+sizem <- 100#
+mat <- matrix(0.01*rnorm(sizem*sizem),sizem,sizem)#
+diag(mat) <- 0#
+#
+Crr <- diag(sizem) + mat#
+#fun(Crr)
+library(inline)#
+bod <-#
+  '#
+  // now this main will be implemented as the skeleton function! :p#
+  #
+  int p = as<int>(pt);#
+  double alpha = as<double>(alphat);#
+  int m_max = as<int>(m_maxt);#
+  NumericMatrix Corr(C);#
+  #
+  //using c++ datatypes and trying to write all functions myself, #
+  //i.e. not calling R from c++#
+  //how to store graph? Use matrix?#
+  bool G[p*p];// only store upper triangle? -> store as vector?#
+  #
+  //all connections exist#
+#
+  initialiseGraph(G,p);#
+#
+  int row = 0;// the current row we are studying the connections of#
+  int connections[p-1]; // stores the connections the current row has (maximum p-1)#
+  //static allocation ==> efficient#
+  int sizeothers,x,y;#
+  double pval;#
+  #
+  for (int ord = 0; ord <= m_max; ++ord)#
+    {#
+      //look for next row with connections then iterate over the remaining connections#
+      //alternative: save all connections explicitly in double array and loop over those.#
+#
+      row = getNextRowWithConnections(row,G,p); // row == x#
+      x = row;#
+      #
+      while(row != -1)#
+	{#
+	  getRowConnections(row,G,p,connections); // getting the connections belonging to the row#
+	  for (int i = 0; i < p-1; ++i)#
+	    {#
+	      //one of the remaining edge tests#
+	      y=connections[i];#
+	      #
+	      //so now we are gonna check the correlation between row and connections[i]#
+	      //in respect to every other subset of lengths ord of the remaining connections#
+	      if(y == -1) break;//reached end of connections#
+	      //y == connections[i]#
+	      std::vector<int> others = getOtherConnections(i,connections,p);#
+	      sizeothers = others.size();#
+	      if (sizeothers < ord)#
+		{#
+		  continue;//goto next loop iteration#
+		}#
+	      #
+	      //initial subset, TODO is there a more efficient way? Builtin way for this?#
+	      std::vector<int> subset(getSeqVector(ord));#
+	     cout << "vector address " << &subset << endl;#
+	     cout<< "while test subset[0] =" << subset[1] << endl;#
+	      while(subset[0] != -1)#
+		{#
+cout << "got in while loop" << endl;#
+		  std::vector<int> k = getSubset(others,subset); //does this work? check! otherwise write own function that does this.#
+		  //pval = pcorOrder(x,y,k,C)#
+		  pval = pcorOrder(x,y,k,Corr);#
+		  #
+		  if (pval >= alpha)#
+		    {#
+		      //independent#
+		      G[x,y]=false;G[y,x]=false;#
+		      break; //no more checking to be done#
+		    }#
+		  #
+		  subset = getNextSet(sizeothers,ord,subset);#
+		}#
+	      #
+	    }#
+	  row = getNextRowWithConnections(row+1,G,p);#
+	}#
+    }#
+  #
+  //convert G to a logicalMatrix for returning to R?#
+  #
+  #
+  return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object#
+'#
+#
+inc <- '#
+#include <iostream>#
+#include <algorithm>#
+//#include <Rcpp.h>#
+#include <vector>#
+#
+/**#
+ *Copyright (C) 2011  Ruben Dezeure#
+ *Contact: dezeurer@student.ethz.ch#
+ *#
+ *This program is free software; you can redistribute it and/or#
+ *modify it under the terms of the GNU General Public License#
+ *as published by the Free Software Foundation; either version 2#
+ *of the License, or (at your option) any later version.#
+ *#
+ *This program is distributed in the hope that it will be useful,#
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of#
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the#
+ *GNU General Public License for more details.#
+ *#
+ *You should have received a copy of the GNU General Public License#
+ *along with this program; if not, write to the Free Software#
+ *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.#
+ **/#
+#
+/**#
+ *code from Alain Hauser#
+ *to get submatrices#
+ *not very fast, try to speed up/ optimise yourself!#
+ *ALTERNATIVE: use the method eleme of the armadillo matrix class#
+ *from mail {\"elem\" returns a vector, so you should then reshape its elements into a matrix #
+ *using one of the member functions \"reshape\" or \"set_size\". #
+ *I have, however, never used that approach, but I think it should work as described.}#
+ **/#
+#
+namespace arma{#
+#
+template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,InputIterator firstRow, InputIterator lastRow,InputIterator firstCol, InputIterator lastCol)#
+  {#
+    Mat<T> result(std::distance(firstRow, lastRow), std::distance(firstCol, lastCol));#
+    InputIterator row, col;#
+    unsigned int i = 0;#
+    unsigned int j = 0;#
+#
+    for (row = firstRow; row != lastRow; ++i, ++row) {#
+      j = 0;#
+      for (col = firstCol; col != lastCol; ++j, ++col)#
+	result(i, j) = input(*row, *col);#
+    }#
+#
+    return result;#
+  }#
+#
+  /**#
+   * Help function to extract arbitrary subvectors#
+   */#
+  template <typename T, typename InputIterator> Col<T> subvec(const Mat<T>& input,InputIterator firstRow, InputIterator lastRow,const unsigned int colind)#
+  {#
+    Col<T> result(std::distance(firstRow, lastRow));#
+    unsigned int i = 0;#
+#
+    for (; firstRow != lastRow; ++i, ++firstRow)#
+      result(i) = input(*firstRow, colind);#
+#
+    return result;#
+  }#
+}#
+using namespace std;#
+#
+#
+/**#
+ *This function calculates partial correlation of i and j given the set k#
+ * C is the correlation matrix among nodes#
+ */#
+double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)#
+{#
+  cout<< " pcorOrder" <<endl;#
+  double r;#
+  double cutat = 0.99999;#
+  #
+  if (k.size() == 0)#
+    {#
+      r = Corr(i,j);#
+      #
+    } #
+  /**#
+   //optimization for the case k.size() ==1 #
+    else if(k.size() ==1)#
+    {#
+      //no match for call to Rcpp::NumericMatrix with (int,vector<int>)#
+      #
+      //use vector product calls and power taking and so on ...#
+      //maybe use armadillo for this?#
+      #
+      r = (Corr(i,j)-Corr(i,k)*Corr(j,k))/sqrt((1-pow(Corr(j,k),2))*(1-Corr(i,k)^2));#
+      }*/ #
+  else#
+    {#
+      // push_front only works on integervector of rcpp library, #
+      // maybe better to use stl vectors#
+      //k.push_front(j);#
+      //k.push_front(i);#
+      //NumericMatrix sub = C(k,k);#
+      #
+      int m=Corr.nrow(),n=Corr.ncol();#
+      arma::mat C(Corr.begin(),m,n,false);//reuses memory and avoids extra copy#
+      //need an efficient way to get the submatrix off of this. Problem is that i j k not #
+      //really represent a range of consecutive rows and columns :/#
+      //use Rinside? look at presentation a LOT of overhead#
+      #
+      //      arma::mat sub = C[c(i,j,k),c(i,j,k)]#
+      std::vector<int> rows(k.size()+2);#
+      int l =0; // index in rows vector#
+      rows[l] = i; #
+      l++;#
+      rows[l] = j; #
+      l++;#
+      #
+      std::vector<int>::iterator row;#
+ #
+      for (row = k.begin(); row !=k.end();++row)#
+	{#
+	  rows[l] = *row;#
+	  l++;#
+	}#
+      #
+      std::vector<int> cols = rows;#
+      #
+      arma::mat sub = arma::submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());#
+      arma::mat PM;#
+      #
+       try#
+	{#
+          PM = arma::inv(sub);#
+	}#
+      catch(runtime_error re)#
+	{#
+          cout << "Caught error yes mam!" << endl;#
+	  //the matrix appears to be singular#
+	  cout << sub.size() << endl;#
+	}#
+      //the correlation matrix is always a positive semi definite matrix#
+      //inverse can be done faster if the matrix is a positive definite symmetric matrix#
+      //we specify this so: inv( sympd(sub) )#
+		    #
+      //PM <- pseudoinverse(C(c(i,j,k),c(i,j,k)))#
+      //return -PM[1,2]/sqrt(PM[1,1]*PM[2,2]);#
+      r = -PM(1,2)/sqrt(PM(1,1)*PM(2,2));      #
+      //r <- -PM(1,2)/sqrt(PM(1,1)*PM(2,2))#
+      //invert matrix better done by rcpparmadillo instead of calling the R function#
+      //not much improvement expected calling the R function :p. maybe good for comparison#
+    }#
+  //if(is.na(r)) r<-0#
+  if(R_IsNA(r))#
+    r = 0;#
+  #
+  //min(cut.at,max(-cut.at,r))#
+#
+  return min(cutat,max(-cutat,r));#
+}#
+#
+#
+/**#
+ * Generate the next set in a list of all possible sets of size k out of 1:n#
+ * #
+ */#
+std::vector<int> getNextSet(int n, int k,std::vector<int> previous)#
+{#
+ /** initial implementation purely based on the R code, might be a faster way to do this*/#
+   cout<< " getnextset" <<endl;#
+#
+  int sum = 0;#
+  std::vector<int>::iterator row;#
+  int iter = n-k+1;#
+  #
+  for (row = previous.begin(); row !=previous.end();++iter,++row)#
+    {#
+      sum += (iter - *row == 0);#
+    }#
+#
+  int chInd = k-sum;#
+  chInd = chInd -1; //working with c++ indexing, not R here#
+  cout << "chInd = "<< chInd << endl;#
+  cout << "k= " << k << " sum = " << sum << endl;#
+  #
+  if(chInd == 0)#
+    {#
+      //was last set to check#
+      previous[0]=-1; //marks finished#
+    }else#
+    {#
+      //there is still a set to go#
+      cout << "there is still a set to go"<<endl;#
+      previous[chInd] =  previous[chInd] +1;#
+      //do we need this really? Yes to cover all subsets!#
+      if (chInd < k)#
+      {#
+	for (int i = chInd+1; i < k; ++i)#
+	  {#
+	    previous[i]=previous[i-1] + 1;#
+	  }#
+      }#
+    }#
+  return previous;#
+}#
+#
+/**#
+ * initialise our graph with all connections on#
+ *#
+ *#
+ */#
+void initialiseGraph(bool G[],int p)#
+{#
+  cout<< "initialisegraph" <<endl;#
+#
+  for (int i = 0; i < p*p; ++i)#
+    {#
+      G[i] = true;#
+    }#
+#
+  for (int i = 0; i < p; ++i)#
+    {#
+      //diagonal connections obviously don\'t exist#
+      G[i*p+i] = false;#
+    }#
+}#
+#
+/**#
+ * any method looks if there is still a connection in the graph matrix#
+ */#
+bool any(bool G[],int p)#
+{#
+  cout<< "any" <<endl;#
+#
+  for (int i = 0; i < p*p; ++i)#
+    {#
+      if (G[i] == true)#
+	{#
+	  return true;#
+	}#
+    }#
+}#
+#
+/**#
+ * row = the row from which we want the connections in the graph#
+ * G = the graph#
+ * p = the number of rows#
+ * returns a integer vector containing the connections of the next #
+ * row that still has connections.#
+ * -1 signals end of connections#
+ */#
+void getRowConnections(int row,bool G[],int p,int* connections)#
+{#
+  cout<< "getrowconnections" <<endl;#
+#
+  int index = 0;//keeping track of the index in the connections vector#
+  #
+  //there is still a row >= startrow with connections#
+  for (int j = 0; j < p; ++j)#
+    {#
+      if (G[row*p+j] == true)#
+	{#
+	  connections[index] = j;#
+	  index++;  #
+	}#
+    }#
+  #
+  if (index != p-1)#
+    {#
+      //we didn\'t have p-1 connections#
+      connections[index+1] = -1; // signal end#
+    }#
+#
+  return;#
+}#
+#
+/**#
+ * startrow = the row from which to start looking for a row with connections in the graph#
+ * G = the graph#
+ * p = the number of rows#
+ * returns an integer value that says which row still has connections#
+ */#
+int getNextRowWithConnections(int startrow,bool G[],int p)#
+{#
+  cout<< "getnextrowwithconnections" <<endl;#
+#
+  for (int row = startrow; row < p; ++row)#
+    {#
+      for (int i = row; i < p; ++i)#
+	{#
+	  //only search through the upper triangular#
+	  if(G[row*p+i] == true)#
+	    {#
+	      //we have a hit!#
+	      return row;#
+	    }#
+	}#
+    }#
+  #
+  //seems like there are no more rows >= startrows containing connections#
+  return -1;#
+}#
+#
+/**#
+ * get the other connection when excluding y#
+ */#
+std::vector<int> getOtherConnections(int j,int* connections,int p)#
+{#
+  cout<< "getotherconnections" <<endl;#
+#
+  std::vector<int> others(0);#
+#
+  for (int i = 0; i < p-1; ++i)#
+    {#
+      if (connections[i] == -1) break;#
+#
+      //we don\'t want y==connections[j] in here#
+      if (i != j)#
+	{#
+	  others.push_back(connections[i]);#
+	}#
+    }#
+  #
+  return others;#
+}#
+#
+/**#
+ * Creates a vector of size ord with elements 1:ord#
+ *#
+ */#
+std::vector<int> getSeqVector(int ord)#
+{#
+  cout<< "getseqvector" <<endl;#
+#
+  std::vector<int> seq(ord);#
+  for (int i = 0; i < ord; ++i)#
+    {#
+      seq[i] = i+1;#
+    }#
+    cout << "endseqvector" << endl;#
+  return seq;#
+}#
+#
+/**#
+ *Get a subset of a vector with the subset signalled by the indices in the vector subset#
+ *#
+ */#
+std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)#
+{#
+  cout<< "getSubset" <<endl;#
+#
+  std::vector<int> subset(subsetind.size(),0);#
+  for (int i = 0; i < subsetind.size(); ++i)#
+    {#
+      subset[i] = set[subsetind[i]];#
+    }#
+  return subset;#
+}#
+#
+/**#
+ *converts the boolian matrix to a logical matrix so we can easily return it to R#
+ */#
+LogicalMatrix convertToLogical(bool G[],int p)#
+{#
+  LogicalMatrix log(p,p);#
+  #
+  for (int i = 0; i < p; ++i)#
+    {#
+      for (int j = 0; j<p; ++j)#
+	{#
+	  log(i,j) = G[i*p+j];#
+	}#
+    }#
+  return log;#
+  #
+}#
+#
+'#
+#
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body = bod,includes=inc,plugin="RcppArmadillo")#
+sizem <- 100#
+mat <- matrix(0.01*rnorm(sizem*sizem),sizem,sizem)#
+diag(mat) <- 0#
+#
+Crr <- diag(sizem) + mat#
+#fun(Crr)
+library(pcalg)#
+#
+## NOTE: Usually, we would ESTIMATE the correlation matrix; but since we are#
+## only interested in the runtime performance, we can use the true correlation#
+## matrix#
+#
+myTrueCor <- function(g)#
+{#
+  ## Purpose: Compute true correlation matrix of graph#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - g: graph object#
+  ## ----------------------------------------------------------------------#
+  ## Value: True correlation matrix corresponding to graph#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 09:05#
+  a <- t(as(g, "matrix"))#
+  p <- ncol(a)#
+  m <- solve(diag(p) - a)#
+  cov2cor( m %*% t(m) )#
+}#
+#
+makeGraph <- function(p, en, seed = NULL)#
+{#
+  ## Purpose: Generate a graph and produce corresponding skeleton and#
+  ## true covariance matrix of nodes#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - p: number of nodes (= gaussian random variable)#
+  ## - en: expected number of neighbors for each node#
+  ## - seed: seed for random number generator#
+  ## ----------------------------------------------------------------------#
+  ## Value: List with two elements#
+  ## - skel: adjacency matrix of skeleton as matrix (should be recovered)#
+  ## - corMat: True correlation matrix of all nodes (input for skeleton function)#
+  ## - g: generated graph object#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 08:36#
+#
+s <- en/(p-1)#
+if (is.null(seed)) seed <- sample(10^4,1)#
+set.seed(seed)#
+rDAG <- randomDAG(p, prob = s, lB=0.1, uB=1)#
+amat <- as(rDAG, "matrix") + t(as(rDAG, "matrix"))#
+amat[amat != 0] <- 1#
+corMat <- myTrueCor(rDAG)#
+#
+list(skel = amat, corMat = corMat, g = rDAG)#
+}#
+#
+estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)#
+{#
+  ## Purpose: Estimate the skeleton#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - corMat: Correlation Matrix of true graph#
+  ## - n: Number of samples that were used to estimate corMat#
+  ## (since we use the true cor. matrix, n = infinity; for numerical reasons,#
+  ## we use n = 10^15; this is a bit quick and dirty, but should work for#
+  ## almost all cases...)#
+  ## - alpha: Sign. level to test the presence of an edge#
+  ## ----------------------------------------------------------------------#
+  ## Value: Estimated adjacency matrix#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 08:40#
+#
+  p <- ncol(corMat)#
+  ## define independence test (partial correlations)#
+  indepTest <- gaussCItest#
+  ## define sufficient statistics#
+  suffStat <- list(C = corMat, n = n)#
+  ##skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)#
+  skeleton.fit <- funskeleton(p,alpha,10000,corMat)#
+  as(skeleton.fit@graph, "matrix")#
+}#
+#
+## TEST 1: Some random graphs of rather small size - true cor. mat#
+nreps <- 100#
+ok <- rep(NA, nreps)#
+p <- 10#
+en <- 3#
+i <- 1#
+cat("i = ",i,"\n")#
+  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+  #
+##for (i in 1:nreps) {#
+##  cat("i = ",i,"\n")#
+##  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+##  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)#
+##}#
+#
+## TEST 2: Some random graphs of rather small size - est. cor. mat#
+## This should be faster, since the estimated cor. mat contains errors#
+## that make the algo stop too early#
+##ok <- rep(NA, nreps)#
+##p <- 10#
+##n <- 1000#
+##en <- 3#
+##for (i in 1:nreps) {#
+##  cat("i = ",i,"\n")#
+##  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+##  corMat <- cor(rmvDAG(n, tmp$g)) ## generate data and estimate cor. matrix#
+##  res <- estSkel(corMat, n = n) ## estimate skel #
+##  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH ESTIMATE (res)#
+##}#
+#
+## TEST 3: Empty graph#
+##p <- 10#
+##tmp <- makeGraph(p, 0, seed = 42) ## generate skeleton and true cor. matrix#
+##res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##all(tmp$skel == res)#
+#
+## TEST 4: Complete graph#
+##p <- 5#
+##tmp <- makeGraph(p, p-1, seed = 42) ## generate skeleton and true cor. matrix#
+##res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##all(tmp$skel == res)
+help(paste)
+readlines("graphfuncts.cpp")
+ls
+readline
+readline("graphfuncts.cpp")
+ls
+ls .
+cd
+readLines( "myfile.cpp")
+readlines("skeleton.cpp")
+readlines("graphfuncts.cpp")
+paste(readlines("skeleton.cpp"),collapse="\n")
+help(readlines)
+??readlines
+readLines("skeleton.cpp")
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body=paste(readLines("skeleton.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),collapse="\n"),plugin="RcppArmadillo")
+library(inline)
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body=paste(readLines("skeleton.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),collapse="\n"),plugin="RcppArmadillo")
+library(pcalg)#
+#
+library(inline)#
+## test!#
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body=paste(readLines("skeletonquick.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),collapse="\n"),plugin="RcppArmadillo")#
+#
+## NOTE: Usually, we would ESTIMATE the correlation matrix; but since we are#
+## only interested in the runtime performance, we can use the true correlation#
+## matrix#
+#
+myTrueCor <- function(g)#
+{#
+  ## Purpose: Compute true correlation matrix of graph#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - g: graph object#
+  ## ----------------------------------------------------------------------#
+  ## Value: True correlation matrix corresponding to graph#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 09:05#
+  a <- t(as(g, "matrix"))#
+  p <- ncol(a)#
+  m <- solve(diag(p) - a)#
+  cov2cor( m %*% t(m) )#
+}#
+#
+makeGraph <- function(p, en, seed = NULL)#
+{#
+  ## Purpose: Generate a graph and produce corresponding skeleton and#
+  ## true covariance matrix of nodes#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - p: number of nodes (= gaussian random variable)#
+  ## - en: expected number of neighbors for each node#
+  ## - seed: seed for random number generator#
+  ## ----------------------------------------------------------------------#
+  ## Value: List with two elements#
+  ## - skel: adjacency matrix of skeleton as matrix (should be recovered)#
+  ## - corMat: True correlation matrix of all nodes (input for skeleton function)#
+  ## - g: generated graph object#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 08:36#
+#
+s <- en/(p-1)#
+if (is.null(seed)) seed <- sample(10^4,1)#
+set.seed(seed)#
+rDAG <- randomDAG(p, prob = s, lB=0.1, uB=1)#
+amat <- as(rDAG, "matrix") + t(as(rDAG, "matrix"))#
+amat[amat != 0] <- 1#
+corMat <- myTrueCor(rDAG)#
+#
+list(skel = amat, corMat = corMat, g = rDAG)#
+}#
+#
+estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)#
+{#
+  ## Purpose: Estimate the skeleton#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - corMat: Correlation Matrix of true graph#
+  ## - n: Number of samples that were used to estimate corMat#
+  ## (since we use the true cor. matrix, n = infinity; for numerical reasons,#
+  ## we use n = 10^15; this is a bit quick and dirty, but should work for#
+  ## almost all cases...)#
+  ## - alpha: Sign. level to test the presence of an edge#
+  ## ----------------------------------------------------------------------#
+  ## Value: Estimated adjacency matrix#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 08:40#
+#
+  p <- ncol(corMat)#
+  ## define independence test (partial correlations)#
+  indepTest <- gaussCItest#
+  ## define sufficient statistics#
+  suffStat <- list(C = corMat, n = n)#
+  ##skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)#
+  skeleton.fit <- funskeleton(p,alpha,10000,corMat)#
+  as(skeleton.fit@graph, "matrix")#
+}#
+#
+## TEST 1: Some random graphs of rather small size - true cor. mat#
+nreps <- 100#
+ok <- rep(NA, nreps)#
+p <- 10#
+en <- 3#
+i <- 1#
+cat("i = ",i,"\n")#
+tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+  #
+##for (i in 1:nreps) {#
+##  cat("i = ",i,"\n")#
+##  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+##  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)#
+##}#
+#
+## TEST 2: Some random graphs of rather small size - est. cor. mat#
+## This should be faster, since the estimated cor. mat contains errors#
+## that make the algo stop too early#
+##ok <- rep(NA, nreps)#
+##p <- 10#
+##n <- 1000#
+##en <- 3#
+##for (i in 1:nreps) {#
+##  cat("i = ",i,"\n")#
+##  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+##  corMat <- cor(rmvDAG(n, tmp$g)) ## generate data and estimate cor. matrix#
+##  res <- estSkel(corMat, n = n) ## estimate skel #
+##  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH ESTIMATE (res)#
+##}#
+#
+## TEST 3: Empty graph#
+##p <- 10#
+##tmp <- makeGraph(p, 0, seed = 42) ## generate skeleton and true cor. matrix#
+##res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##all(tmp$skel == res)#
+#
+## TEST 4: Complete graph#
+##p <- 5#
+##tmp <- makeGraph(p, p-1, seed = 42) ## generate skeleton and true cor. matrix#
+##res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##all(tmp$skel == res)
+getwd()
+setwd("/Users/rubendezeure/Documents/studies/semester_paper/skeleton")
+library(pcalg)#
+#
+library(inline)#
+## test!#
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body=paste(readLines("skeletonquick.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),collapse="\n"),plugin="RcppArmadillo")#
+#
+## NOTE: Usually, we would ESTIMATE the correlation matrix; but since we are#
+## only interested in the runtime performance, we can use the true correlation#
+## matrix#
+#
+myTrueCor <- function(g)#
+{#
+  ## Purpose: Compute true correlation matrix of graph#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - g: graph object#
+  ## ----------------------------------------------------------------------#
+  ## Value: True correlation matrix corresponding to graph#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 09:05#
+  a <- t(as(g, "matrix"))#
+  p <- ncol(a)#
+  m <- solve(diag(p) - a)#
+  cov2cor( m %*% t(m) )#
+}#
+#
+makeGraph <- function(p, en, seed = NULL)#
+{#
+  ## Purpose: Generate a graph and produce corresponding skeleton and#
+  ## true covariance matrix of nodes#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - p: number of nodes (= gaussian random variable)#
+  ## - en: expected number of neighbors for each node#
+  ## - seed: seed for random number generator#
+  ## ----------------------------------------------------------------------#
+  ## Value: List with two elements#
+  ## - skel: adjacency matrix of skeleton as matrix (should be recovered)#
+  ## - corMat: True correlation matrix of all nodes (input for skeleton function)#
+  ## - g: generated graph object#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 08:36#
+#
+s <- en/(p-1)#
+if (is.null(seed)) seed <- sample(10^4,1)#
+set.seed(seed)#
+rDAG <- randomDAG(p, prob = s, lB=0.1, uB=1)#
+amat <- as(rDAG, "matrix") + t(as(rDAG, "matrix"))#
+amat[amat != 0] <- 1#
+corMat <- myTrueCor(rDAG)#
+#
+list(skel = amat, corMat = corMat, g = rDAG)#
+}#
+#
+estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)#
+{#
+  ## Purpose: Estimate the skeleton#
+  ## ----------------------------------------------------------------------#
+  ## Arguments:#
+  ## - corMat: Correlation Matrix of true graph#
+  ## - n: Number of samples that were used to estimate corMat#
+  ## (since we use the true cor. matrix, n = infinity; for numerical reasons,#
+  ## we use n = 10^15; this is a bit quick and dirty, but should work for#
+  ## almost all cases...)#
+  ## - alpha: Sign. level to test the presence of an edge#
+  ## ----------------------------------------------------------------------#
+  ## Value: Estimated adjacency matrix#
+  ## ----------------------------------------------------------------------#
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 08:40#
+#
+  p <- ncol(corMat)#
+  ## define independence test (partial correlations)#
+  indepTest <- gaussCItest#
+  ## define sufficient statistics#
+  suffStat <- list(C = corMat, n = n)#
+  ##skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)#
+  skeleton.fit <- funskeleton(p,alpha,10000,corMat)#
+  as(skeleton.fit@graph, "matrix")#
+}#
+#
+## TEST 1: Some random graphs of rather small size - true cor. mat#
+nreps <- 100#
+ok <- rep(NA, nreps)#
+p <- 10#
+en <- 3#
+i <- 1#
+cat("i = ",i,"\n")#
+tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+  #
+##for (i in 1:nreps) {#
+##  cat("i = ",i,"\n")#
+##  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+##  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)#
+##}#
+#
+## TEST 2: Some random graphs of rather small size - est. cor. mat#
+## This should be faster, since the estimated cor. mat contains errors#
+## that make the algo stop too early#
+##ok <- rep(NA, nreps)#
+##p <- 10#
+##n <- 1000#
+##en <- 3#
+##for (i in 1:nreps) {#
+##  cat("i = ",i,"\n")#
+##  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix#
+##  corMat <- cor(rmvDAG(n, tmp$g)) ## generate data and estimate cor. matrix#
+##  res <- estSkel(corMat, n = n) ## estimate skel #
+##  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH ESTIMATE (res)#
+##}#
+#
+## TEST 3: Empty graph#
+##p <- 10#
+##tmp <- makeGraph(p, 0, seed = 42) ## generate skeleton and true cor. matrix#
+##res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##all(tmp$skel == res)#
+#
+## TEST 4: Complete graph#
+##p <- 5#
+##tmp <- makeGraph(p, p-1, seed = 42) ## generate skeleton and true cor. matrix#
+##res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)#
+##all(tmp$skel == res)
+quit()
