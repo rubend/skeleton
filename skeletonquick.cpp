@@ -1,10 +1,13 @@
 
+// for R
+// setwd("/Users/rubendezeure/Documents/studies/semester_paper/skeleton")
 // now this main will be implemented as the skeleton function! :p
   
 int p = as<int>(pt);
 double alpha = as<double>(alphat);
 int m_max = as<int>(m_maxt);
 NumericMatrix Corr(C);
+
   
 //using c++ datatypes and trying to write all functions myself, 
 //i.e. not calling R from c++
@@ -21,14 +24,19 @@ double pval;
 std::vector<int> subset(0,0);//declare in beginning and increase size every loop run
 std::vector<int> others(0);
 //ord = 0 gives problems with subset size and the like, right? is it really needed?
+int iter =0;
+
 for (int ord = 0; ord <= m_max; ++ord)
   {
-       
+    cout << "ord = " << ord << endl;
+    
     //look for next row with connections then iterate over the remaining connections
     //alternative: save all connections explicitly in double array and loop over those.
-      
     row = getNextRowWithConnections(row,G,p); // row == x
+    cout << "row = " << row << endl;
+    
     x = row;
+    
       
     while(row != -1)
       {
@@ -55,30 +63,30 @@ for (int ord = 0; ord <= m_max; ++ord)
 	      
 	    //problem is that subset has size 0, getting the 0th element 
 	    //--> gives shit! --> crappy way of doing stuff.
-
-	    while(ord >0 && subset[0] != -1)
+	    
+	    while(ord != 0 &&  subset[0] != -1)
 	      {
 
 		std::vector<int> k = getSubset(others,subset); //does this work? check! otherwise write own function that does this.
 		//pval = pcorOrder(x,y,k,C)
 		pval = pcorOrder(x,y,k,Corr);
-		  
+		iter++;
+		
+		
 		if (pval >= alpha)
 		  {
 		    //independent
 		    G[x,y]=false;G[y,x]=false;
 		    break; //no more checking to be done
 		  }
-		  
-		subset = getNextSet(sizeothers,ord,subset);
+		subset = getNextSet(sizeothers,ord,subset);  
 	      }
 	      
 	  }
 	row = getNextRowWithConnections(row+1,G,p);
       }
   }
-  
 //convert G to a logicalMatrix for returning to R?
   
-  
+
 return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object

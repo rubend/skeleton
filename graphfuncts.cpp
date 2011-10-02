@@ -98,21 +98,23 @@ void getRowConnections(int row,bool G[],int p,int* connections)
  */
 int getNextRowWithConnections(int startrow,bool G[],int p)
 {
-  for (int row = startrow; row < p; ++row)
+  int returnrow = -1;
+  
+  for (int row = startrow; row < p; row++)
     {
-      for (int i = row; i < p; ++i)
+      for (int i = row; i < p; i++)
 	{
 	  //only search through the upper triangular
-	  if(G[row*p+i] == true)
+	  if(G[row*p+i] == 1)
 	    {
-	      //we have a hit!
-	      return row;
+	      returnrow = row;
+	      break;
 	    }
 	}
     }
   
   //seems like there are no more rows >= startrows containing connections
-  return -1;
+  return returnrow;
 }
 
 /**
@@ -235,7 +237,7 @@ template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,
  * C is the correlation matrix among nodes
  */
 double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
-{
+{  
   double r;
   double cutat = 0.99999;
   
@@ -301,6 +303,7 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 	  cout << "Caught error yes mam!" << endl;
 	  //the matrix appears to be singular
 	  cout << sub << endl;
+	  //otherwise we would just get a matrix index out of bounds error right below here.
 	}
       
       //the correlation matrix is always a positive semi definite matrix
@@ -333,6 +336,11 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
   int sum = 0;
   std::vector<int>::iterator row;
   int iter = n-k+1;
+  if(k == 0)
+    {
+      return previous; //empty set can only be replaced by empty set!
+    }
+  
   
   for (row = previous.begin(); row !=previous.end();++iter,++row)
     {
@@ -341,8 +349,8 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
 
   int chInd = k-sum;
   chInd = chInd -1; //working with c++ indexing, not R here
-  cout << "chInd = "<< chInd << endl;
-  cout << "k= " << k << " sum = " << sum << endl;
+  //cout << "chInd = "<< chInd << endl;
+  //cout << "k= " << k << " sum = " << sum << endl;
   
   if(chInd == 0)
     {
@@ -351,7 +359,7 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
     }else
     {
       //there is still a set to go
-      cout << "there is still a set to go"<<endl;
+      //cout << "there is still a set to go"<<endl;
       previous[chInd] =  previous[chInd] +1;
       //do we need this really? Yes to cover all subsets!
       if (chInd < k)

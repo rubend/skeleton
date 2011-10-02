@@ -1,3 +1,4 @@
+setwd("/Users/rubendezeure/Documents/studies/semester_paper/skeleton")
 library(pcalg)
 
 library(inline)
@@ -74,20 +75,52 @@ estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
   ## define sufficient statistics
   suffStat <- list(C = corMat, n = n)
   ##skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)
-  skeleton.fit <- funskeleton(p,alpha,10000,corMat)
+  skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=10000,C=corMat)
   ##as(skeleton.fit@graph, "matrix")
   as(skeleton.fit, "matrix")
 }
+
+estSkel2 <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
+{
+  ## Purpose: Estimate the skeleton
+  ## ----------------------------------------------------------------------
+  ## Arguments:
+  ## - corMat: Correlation Matrix of true graph
+  ## - n: Number of samples that were used to estimate corMat
+  ## (since we use the true cor. matrix, n = infinity; for numerical reasons,
+  ## we use n = 10^15; this is a bit quick and dirty, but should work for
+  ## almost all cases...)
+  ## - alpha: Sign. level to test the presence of an edge
+  ## ----------------------------------------------------------------------
+  ## Value: Estimated adjacency matrix
+  ## ----------------------------------------------------------------------
+  ## Author: Markus Kalisch, Date: 20 Sep 2011, 08:40
+
+  p <- ncol(corMat)
+  ## define independence test (partial correlations)
+  indepTest <- gaussCItest
+  ## define sufficient statistics
+  suffStat <- list(C = corMat, n = n)
+  skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)
+  as(skeleton.fit@graph, "matrix")
+ }
 
 ## TEST 1: Some random graphs of rather small size - true cor. mat
 nreps <- 100
 ok <- rep(NA, nreps)
 p <- 10
 en <- 3
-for (i in 1:nreps) {
-  cat("i = ",i,"\n")
-  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
-  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
-  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
-}
-ok
+i <- 1
+cat("i = ",i,"\n")
+tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
+res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
+res == tmp$skel ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
+res
+
+##for (i in 1:nreps) {
+ ## cat("i = ",i,"\n")
+  ##tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
+ ## res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
+  ##ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
+##}
+##ok
