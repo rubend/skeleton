@@ -6,3 +6,9 @@ graphfuncts.o
 skeleton.so
 
 skeleton.o
+
+.Rdata
+
+.Rhistory
+
+.Rapp.history
