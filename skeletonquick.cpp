@@ -1,3 +1,6 @@
+
+// for R
+// setwd("/Users/rubendezeure/Documents/studies/semester_paper/skeleton")
 // now this main will be implemented as the skeleton function! :p
   
 int p = as<int>(pt);
@@ -13,7 +16,7 @@ bool G[p*p];// only store upper triangle? -> store as vector?
   
 initialiseGraph(G,p);
 
-int row;// the current row we are studying the connections of
+int row = 0;// the current row we are studying the connections of
 int connections[p-1]; // stores the connections the current row has (maximum p-1)
 //static allocation ==> efficient
 int sizeothers,x,y;
@@ -29,15 +32,11 @@ for (int ord = 0; ord <= m_max; ++ord)
     
     //look for next row with connections then iterate over the remaining connections
     //alternative: save all connections explicitly in double array and loop over those.
-    row = 0; // reset to zero
-    
     row = getNextRowWithConnections(row,G,p); // row == x
     cout << "row = " << row << endl;
-
-    //exit(0);
     
+    x = row;
     
-    x = row;    
       
     while(row != -1)
       {
@@ -65,17 +64,14 @@ for (int ord = 0; ord <= m_max; ++ord)
 	    //problem is that subset has size 0, getting the 0th element 
 	    //--> gives shit! --> crappy way of doing stuff.
 	    
-	    //temporary fix, might be a cleaner way to do this
-	    while(subset.size() == 0 || subset[0] != -1)
+	    while(ord != 0 &&  subset[0] != -1)
 	      {
-		//subset.size() == 0 is possible if ord == 0, subset[0] == -1 is the stop condition
 
 		std::vector<int> k = getSubset(others,subset); //does this work? check! otherwise write own function that does this.
 		//pval = pcorOrder(x,y,k,C)
 		pval = pcorOrder(x,y,k,Corr);
-		cout << "pval = " << pval << endl;
-		
 		iter++;
+		
 		
 		if (pval >= alpha)
 		  {
@@ -85,10 +81,12 @@ for (int ord = 0; ord <= m_max; ++ord)
 		  }
 		subset = getNextSet(sizeothers,ord,subset);  
 	      }
+	      
 	  }
 	row = getNextRowWithConnections(row+1,G,p);
       }
   }
 //convert G to a logicalMatrix for returning to R?
   
+
 return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object

@@ -33,8 +33,6 @@ using namespace Rcpp;
  */
 void initialiseGraph(bool G[],int p)
 {
-  cout << "initialisegraph" << endl;
-  
   for (int i = 0; i < p*p; ++i)
     {
       G[i] = true;
@@ -52,8 +50,6 @@ void initialiseGraph(bool G[],int p)
  */
 bool any(bool G[],int p)
 {
-  cout << "any" << endl;
-  
   for (int i = 0; i < p*p; ++i)
     {
       if (G[i] == true)
@@ -73,16 +69,13 @@ bool any(bool G[],int p)
  */
 void getRowConnections(int row,bool G[],int p,int* connections)
 {
-  cout << "getrowconnections" << endl;
-  
   int index = 0;//keeping track of the index in the connections vector
   
   //there is still a row >= startrow with connections
   for (int j = 0; j < p; ++j)
     {
-      if (G[row*p + row + j] == true)
+      if (G[row*p+j] == true)
 	{
-	  //row*p + row + j, we are only looking from the diagonal and on, otherwise we have doubles in our connections, Graph is symmetric remember!
 	  connections[index] = j;
 	  index++;  
 	}
@@ -105,27 +98,17 @@ void getRowConnections(int row,bool G[],int p,int* connections)
  */
 int getNextRowWithConnections(int startrow,bool G[],int p)
 {
-  cout << "getNextRowWithConnections" << endl;
-  
   int returnrow = -1;
-  cout << "startrow = " << startrow << endl;
-  //cout << " p = " << p << endl;
-  
   
   for (int row = startrow; row < p; row++)
     {
-      cout << "row = " << row << endl;
-      
       for (int i = row; i < p; i++)
 	{
-	  cout << "i = " << i << endl;
-	  
 	  //only search through the upper triangular
 	  if(G[row*p+i] == 1)
 	    {
 	      returnrow = row;
-	      //break; // this wouldn't exit the whole loop only the inner one!
-	      return returnrow;
+	      break;
 	    }
 	}
     }
@@ -139,7 +122,6 @@ int getNextRowWithConnections(int startrow,bool G[],int p)
  */
 void getOtherConnections(std::vector<int>* others,int j,int* connections,int p)
 {
-  cout << "getOtherConnections" << endl;
   (*others).resize(0);
   for (int i = 0; i < p-1; ++i)
     {
@@ -161,7 +143,6 @@ void getOtherConnections(std::vector<int>* others,int j,int* connections,int p)
  */
 void getSeqVector(std::vector<int>* subset,int ord)
 {
-  cout << "getSeqVector" << endl;
   (*subset).resize(ord);
   for (int i = 0; i < ord; ++i)
     {
@@ -176,8 +157,6 @@ void getSeqVector(std::vector<int>* subset,int ord)
  */
 std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)
 {
-  //cout << "getsubset" << endl;//DEBUG
-
   std::vector<int> subset(subsetind.size(),0);
   for (int i = 0; i < subsetind.size(); ++i)
     {
@@ -191,8 +170,6 @@ std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)
  */
 LogicalMatrix convertToLogical(bool G[],int p)
 {
-  cout << "converttological" << endl;
-
   LogicalMatrix log(p,p);
   
   for (int i = 0; i < p; ++i)
@@ -219,11 +196,10 @@ LogicalMatrix convertToLogical(bool G[],int p)
 namespace arma
 {
   
-  template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,
+template <typename T, typename InputIterator> Mat<T> submat(const Mat<T>& input,
 							      InputIterator firstRow, InputIterator lastRow,
 							      InputIterator firstCol, InputIterator lastCol)
   {
-    //cout << "submat" << endl;//DEBUG
     Mat<T> result(std::distance(firstRow, lastRow), std::distance(firstCol, lastCol));
     InputIterator row, col;
     unsigned int i = 0;
@@ -245,8 +221,6 @@ namespace arma
 							      InputIterator firstRow, InputIterator lastRow,
 							      const unsigned int colind)
   {
-    //cout << "subvec" << endl;//DEBUG
-
     Col<T> result(std::distance(firstRow, lastRow));
     unsigned int i = 0;
 
@@ -264,26 +238,25 @@ namespace arma
  */
 double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 {  
-  //cout << "pcororder" << endl;//DEBUG
-
   double r;
   double cutat = 0.99999;
   
   if (k.size() == 0)
     {
       r = Corr(i,j);
+      
     } 
   /**
    //optimization for the case k.size() ==1 
-   else if(k.size() ==1)
-   {
-   //no match for call to Rcpp::NumericMatrix with (int,vector<int>)
+    else if(k.size() ==1)
+    {
+      //no match for call to Rcpp::NumericMatrix with (int,vector<int>)
       
-   //use vector product calls and power taking and so on ...
-   //maybe use armadillo for this?
+      //use vector product calls and power taking and so on ...
+      //maybe use armadillo for this?
       
-   r = (Corr(i,j)-Corr(i,k)*Corr(j,k))/sqrt((1-pow(Corr(j,k),2))*(1-Corr(i,k)^2));
-   }*/ 
+      r = (Corr(i,j)-Corr(i,k)*Corr(j,k))/sqrt((1-pow(Corr(j,k),2))*(1-Corr(i,k)^2));
+      }*/ 
   else
     {
       // push_front only works on integervector of rcpp library, 
@@ -318,7 +291,6 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       
       //might be the big performance stumble block right here, 
       //possibly needs to be optimized
-      
       arma::mat sub = arma::submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());
       arma::mat PM;
       
@@ -329,18 +301,6 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       catch(runtime_error re)
 	{
 	  cout << "Caught error yes mam!" << endl;
-	  
-	  cout << "Some DEBUG info: "<<endl;
-	  cout << "i = " << i << " j = " << j << endl;
-
-	  for(int l = 0; l< k.size();l++)
-	    {
-	      cout << k[l] << " , ";
-	    }
-	  cout << endl;
-
-	  cout << Corr << endl;
-
 	  //the matrix appears to be singular
 	  cout << sub << endl;
 	  //otherwise we would just get a matrix index out of bounds error right below here.
@@ -372,12 +332,15 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
  */
 std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
 {
-  //cout << "getnextset" << endl;//DEBUG
-
-  /** initial implementation purely based on the R code, might be a faster way to do this*/
+ /** initial implementation purely based on the R code, might be a faster way to do this*/
   int sum = 0;
   std::vector<int>::iterator row;
   int iter = n-k+1;
+  if(k == 0)
+    {
+      return previous; //empty set can only be replaced by empty set!
+    }
+  
   
   for (row = previous.begin(); row !=previous.end();++iter,++row)
     {
@@ -389,12 +352,10 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
   //cout << "chInd = "<< chInd << endl;
   //cout << "k= " << k << " sum = " << sum << endl;
   
-  if(chInd == 0 || k == 0)
+  if(chInd == 0)
     {
-      //was last set to check, k == 0 there was no set actually ^^
-      previous.resize(1); 
-      previous[0] = -1; //marks finished
-      
+      //was last set to check
+      previous[0]=-1; //marks finished
     }else
     {
       //there is still a set to go
@@ -402,12 +363,12 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
       previous[chInd] =  previous[chInd] +1;
       //do we need this really? Yes to cover all subsets!
       if (chInd < k)
-	{
-	  for (int i = chInd+1; i < k; ++i)
-	    {
-	      previous[i]=previous[i-1] + 1;
-	    }
-	}
+      {
+	for (int i = chInd+1; i < k; ++i)
+	  {
+	    previous[i]=previous[i-1] + 1;
+	  }
+      }
     }
   return previous;
 }

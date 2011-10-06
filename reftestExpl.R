@@ -1,4 +1,4 @@
-setwd("/Users/rubendezeure/Documents/studies/hs_2011/semester_paper/skeleton")
+setwd("/Users/rubendezeure/Documents/studies/semester_paper/skeleton")
 library(pcalg)
 
 library(inline)
@@ -75,9 +75,7 @@ estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
   ## define sufficient statistics
   suffStat <- list(C = corMat, n = n)
   ##skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)
-  ##skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=10000,C=corMat)
-  ##for testing purposes
-  skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=5,C=corMat)
+  skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=10000,C=corMat)
   ##as(skeleton.fit@graph, "matrix")
   as(skeleton.fit, "matrix")
 }
@@ -107,18 +105,15 @@ estSkel2 <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
   as(skeleton.fit@graph, "matrix")
  }
 
-#debug test cases
-
 ## TEST 1: Some random graphs of rather small size - true cor. mat
 nreps <- 100
 ok <- rep(NA, nreps)
-p <- 5
-en <- 2
+p <- 10
+en <- 3
 i <- 1
 cat("i = ",i,"\n")
 tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
 res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
-tmp$corMat
 res == tmp$skel ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
 res
 
