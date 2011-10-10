@@ -33,7 +33,7 @@ using namespace Rcpp;
  */
 void initialiseGraph(bool G[],int p)
 {
-  cout << "initialisegraph" << endl;
+  //cout << "initialisegraph" << endl;
   
   for (int i = 0; i < p*p; ++i)
     {
@@ -52,7 +52,7 @@ void initialiseGraph(bool G[],int p)
  */
 bool any(bool G[],int p)
 {
-  cout << "any" << endl;
+  //cout << "any" << endl;
   
   for (int i = 0; i < p*p; ++i)
     {
@@ -73,14 +73,14 @@ bool any(bool G[],int p)
  */
 void getRowConnections(int row,bool G[],int p,int* connections)
 {
-  cout << "getrowconnections" << endl;
+  //cout << "getrowconnections" << endl;
   
   int index = 0;//keeping track of the index in the connections vector
   
   //there is still a row >= startrow with connections
-  for (int j = 0; j < p; ++j)
+  for (int j = row; j < p; ++j)
     {
-      if (G[row*p + row + j] == true)
+      if (G[row*p + j] == true)
 	{
 	  //row*p + row + j, we are only looking from the diagonal and on, otherwise we have doubles in our connections, Graph is symmetric remember!
 	  connections[index] = j;
@@ -91,7 +91,7 @@ void getRowConnections(int row,bool G[],int p,int* connections)
   if (index != p-1)
     {
       //we didn\'t have p-1 connections
-      connections[index+1] = -1; // signal end
+      connections[index] = -1; // signal end
     }
 
   return;
@@ -105,20 +105,18 @@ void getRowConnections(int row,bool G[],int p,int* connections)
  */
 int getNextRowWithConnections(int startrow,bool G[],int p)
 {
-  cout << "getNextRowWithConnections" << endl;
+  //cout << "getNextRowWithConnections" << endl;
   
   int returnrow = -1;
-  cout << "startrow = " << startrow << endl;
+  //cout << "startrow = " << startrow << endl;
   //cout << " p = " << p << endl;
   
   
   for (int row = startrow; row < p; row++)
     {
-      cout << "row = " << row << endl;
       
       for (int i = row; i < p; i++)
 	{
-	  cout << "i = " << i << endl;
 	  
 	  //only search through the upper triangular
 	  if(G[row*p+i] == 1)
@@ -139,7 +137,7 @@ int getNextRowWithConnections(int startrow,bool G[],int p)
  */
 void getOtherConnections(std::vector<int>* others,int j,int* connections,int p)
 {
-  cout << "getOtherConnections" << endl;
+  //cout << "getOtherConnections" << endl;
   (*others).resize(0);
   for (int i = 0; i < p-1; ++i)
     {
@@ -156,17 +154,20 @@ void getOtherConnections(std::vector<int>* others,int j,int* connections,int p)
 }
 
 /**
- * Creates a vector of size ord with elements 1:ord
+ * Creates a vector of size ord with elements 0:ord-1
  *
  */
 void getSeqVector(std::vector<int>* subset,int ord)
 {
-  cout << "getSeqVector" << endl;
+  //cout << "getSeqVector" << endl;
+  
   (*subset).resize(ord);
+
   for (int i = 0; i < ord; ++i)
     {
-      (*subset)[i] = i+1;
+      (*subset)[i] = i;
     }
+
   return;
 }
 
@@ -179,8 +180,11 @@ std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)
   //cout << "getsubset" << endl;//DEBUG
 
   std::vector<int> subset(subsetind.size(),0);
+  
   for (int i = 0; i < subsetind.size(); ++i)
     {
+      //cout << "i = " << i << " subsetind[i] = " << subsetind[i] << " set[subsetind[i]] = " << set[subsetind[i]] << endl;
+      
       subset[i] = set[subsetind[i]];
     }
   return subset;
@@ -293,6 +297,8 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       //NumericMatrix sub = C(k,k);
       
       int m=Corr.nrow(),n=Corr.ncol();
+     
+      
       arma::mat C(Corr.begin(),m,n,false);//reuses memory and avoids extra copy
       //need an efficient way to get the submatrix off of this. Problem is that i j k not 
       //really represent a range of consecutive rows and columns :/
@@ -305,21 +311,29 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       l++;
       rows[l] = j; 
       l++;
+      //cout << "i and j " << i << " and " << j << endl;
       
       std::vector<int>::iterator row;
  
       for (row = k.begin(); row !=k.end();++row)
 	{
 	  rows[l] = *row;
+	  //cout << "k elem " << *row << endl;
+	  
 	  l++;
 	}
       
       std::vector<int> cols = rows;
       
-      //might be the big performance stumble block right here, 
+      //might be the big performance stumble block right here,
       //possibly needs to be optimized
+      //cout << "C matrix " << m << "," << n<< endl;
+      //cout << "row " << rows.front() << "," << rows.back() << endl;
+      //cout << "end of k " << k.back() << endl;
+      
       
       arma::mat sub = arma::submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());
+
       arma::mat PM;
       
       try
@@ -345,6 +359,7 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 	  cout << sub << endl;
 	  //otherwise we would just get a matrix index out of bounds error right below here.
 	}
+      //cout << "PM size " << PM.size() << endl;
       
       //the correlation matrix is always a positive semi definite matrix
       //inverse can be done faster if the matrix is a positive definite symmetric matrix
@@ -377,11 +392,12 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
   /** initial implementation purely based on the R code, might be a faster way to do this*/
   int sum = 0;
   std::vector<int>::iterator row;
-  int iter = n-k+1;
+  int iter = n-k;
+  //cout << "iter = " << iter << endl;
   
   for (row = previous.begin(); row !=previous.end();++iter,++row)
     {
-      sum += (iter - *row == 0);
+      sum += ((iter - *row) == 0);
     }
 
   int chInd = k-sum;
@@ -389,11 +405,12 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
   //cout << "chInd = "<< chInd << endl;
   //cout << "k= " << k << " sum = " << sum << endl;
   
-  if(chInd == 0 || k == 0)
+  if(chInd == -1 || k == 0)
     {
       //was last set to check, k == 0 there was no set actually ^^
       previous.resize(1); 
       previous[0] = -1; //marks finished
+      cout << "=-=FINISHED WITH SETS" << endl;
       
     }else
     {
