@@ -84,8 +84,7 @@ skeleton <- function(suffStat, indepTest, p, alpha, verbose = FALSE,
             if (verbose) cat("x=",x," y=",y," S=",nbrs[S],": pval =",pval,"\n")
             if (is.na(pval)) pval <- if(NAdelete) 1 else 0
             if (pval > pMax[x,y]) pMax[x,y] <- pval
-              pval ## print this out for comparison with c++ code
-                
+            
             if(pval >= alpha) { # independent
               G[x,y] <- G[y,x] <- FALSE
               sepset[[x]][[y]] <- nbrs[S]
@@ -101,6 +100,7 @@ skeleton <- function(suffStat, indepTest, p, alpha, verbose = FALSE,
       } ## if(!done)
 
     } ## for(i in 1:remainingEdgeTests)
+    G
     ord <- ord1
   } ## while
 

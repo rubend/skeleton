@@ -410,7 +410,7 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
       //was last set to check, k == 0 there was no set actually ^^
       previous.resize(1); 
       previous[0] = -1; //marks finished
-      cout << "=-=FINISHED WITH SETS" << endl;
+      //      cout << "=-=FINISHED WITH SETS" << endl;
       
     }else
     {

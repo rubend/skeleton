@@ -32,7 +32,7 @@ for (int ord = 0; ord <= m_max; ++ord)
     row = 0; // reset to zero
     
     row = getNextRowWithConnections(row,G,p); // row == x
-    cout << "row = " << row << endl;
+    //cout << "row = " << row << endl;
 
     //exit(0);
     
@@ -49,16 +49,15 @@ for (int ord = 0; ord <= m_max; ++ord)
 	//  cout << connections[i] << endl;
 	//}
 
-	cout << "For row = " << row-1 << endl;
-	for (int i = 0; i < p; ++i)
-	  {
-	    cout << "G[0," <<i<<"] = " << G[0,i] << endl;
-	  }
-	for (int i = 0; i < p; ++i)
-	  {
-	    cout << "G[1," <<i<<"] = " << G[1,i] << endl;
-
-	  }
+	//cout << "For row = " << row-1 << endl;
+	//for (int i = 0; i < p; ++i)
+	// {
+	//  cout << "G[0," <<i<<"] = " << G[i] << endl;
+	//}
+	//for (int i = 0; i < p; ++i)
+	//{
+	//  cout << "G[1," <<i<<"] = " << G[p+i] << endl;
+	//}
 
 	for (int i = 0; i < p-1; ++i)
 	  {
@@ -109,43 +108,41 @@ for (int ord = 0; ord <= m_max; ++ord)
 		//cout << "k " << k.back() << endl;
 		
 		pval = pcorOrder(x,y,k,Corr);
-		cout << "x y " << x << " " << y << endl;
+		//cout << "x y " << x << " " << y << endl;
 		
-		cout << "pval = " << pval << endl;
+		//cout << "pval = " << pval << endl;
 		
 		iter++;
 		
-		if (pval >=  alpha)
+		if ((ord == 0 && pval <  alpha) || (ord >0 && pval >= alpha))
+		  //if (pval <  alpha)
 		  {
+		    cout << "x " << x << " and y " << y << endl;
+		    
 		    cout << "FALSE" << endl;
 		    
 		    //independent
-		    G[x,y]=false;G[y,x]=false;
-
-		    cout << "For row = " << row-1 << endl;
-		    for (int i = 0; i < p; ++i)
-		      {
-			cout << "G[0," <<i<<"] = " << G[0,i] << endl;
-		      }
-		    for (int i = 0; i < p; ++i)
-		      {
-    			cout << "G[1," <<i<<"] = " << G[1,i] << endl;
-
-		      }
+		    G[p*x+y]=false;G[p*y+x]=false;
 	
 		    break; //no more checking to be done
 		  }
 		subset = getNextSet(sizeothers,ord,subset);  
 	      }
 	  }
-
-	  
 	
 	row = getNextRowWithConnections(row+1,G,p);
 	
-	cout << "row = " << row << endl;
+	//cout << "row = " << row << endl;
 
       }
+    //cout << "Ended ord = " << ord << endl;
+    //for (int i = 0; i < p; ++i)
+    // {
+    //	for (int j = 0; j < p; ++j)
+    //	  {
+    //	    cout << "G["<<i<<","<<j<<"] = " << G[i*p+j]<<endl;
+    //	  }
+    //}
   }
 //convert G to a logicalMatrix for returning to R?
   
