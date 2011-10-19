@@ -190,25 +190,7 @@ std::vector<int> getSubset(std::vector<int> set,std::vector<int> subsetind)
   return subset;
 }
 
-/**
- *converts the boolian matrix to a logical matrix so we can easily return it to R
- */
-LogicalMatrix convertToLogical(bool G[],int p)
-{
-  cout << "converttological" << endl;
 
-  LogicalMatrix log(p,p);
-  
-  for (int i = 0; i < p; ++i)
-    {
-      for (int j = 0; j<p; ++j)
-	{
-	  log(i,j) = G[i*p+j];
-	}
-    }
-  return log;
-  
-}
 
 /**
  *Copyright (C) 2011 Alain Hauser
@@ -263,6 +245,29 @@ namespace arma
 
 
 /**
+ *converts the boolian matrix to a logical matrix so we can easily return it to R
+ */
+LogicalMatrix convertToLogical(bool G[],int p)
+{
+  cout << "converttological" << endl;
+
+  LogicalMatrix log(p,p);
+  
+  for (int i = 0; i < p; ++i)
+    {
+      for (int j = 0; j<p; ++j)
+	{
+	  log(i,j) = G[i*p+j];
+	}
+    }
+
+
+
+  return log;
+  
+}
+
+/**
  *This function calculates partial correlation of i and j given the set k
  * C is the correlation matrix among nodes
  */
@@ -305,6 +310,8 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       //use Rinside? look at presentation a LOT of overhead
       
       //      arma::mat sub = C[c(i,j,k),c(i,j,k)]
+      //cout << "C["<<i<<","<<j<<"] = " << C[i,j] << endl;
+      
       std::vector<int> rows(k.size()+2);
       int l =0; // index in rows vector
       rows[l] = i; 
@@ -367,10 +374,14 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 		    
       //PM <- pseudoinverse(C(c(i,j,k),c(i,j,k)))
       //return -PM[1,2]/sqrt(PM[1,1]*PM[2,2]);
+      cout << "PM " << endl << PM << endl;
+      
       r = -PM(1,2)/sqrt(PM(1,1)*PM(2,2));      
       //r <- -PM(1,2)/sqrt(PM(1,1)*PM(2,2))
       //invert matrix better done by rcpparmadillo instead of calling the R function
       //not much improvement expected calling the R function :p. maybe good for comparison
+      //cout <<"r = " << r << endl;
+      
     }
   //if(is.na(r)) r<-0
   if(R_IsNA(r))
@@ -380,6 +391,20 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
   return min(cutat,max(-cutat,r));
 }
 
+double zStat(int i,int j,std::vector<int> k,NumericMatrix Corr,long n)
+{
+  double r = pcorOrder(i,j,k,Corr);
+  r = sqrt(n-k.size()-3.0)*(0.5*log((1.0+r)/(1.0-r)));
+  //check if na? see R code
+  return r;
+}
+
+double gaussCItest(int i,int j,std::vector<int> k,NumericMatrix Corr,long n)
+{
+  double z = zStat(i,j,k,Corr,n);
+  return 2*stats::pnorm_0(fabs(z),0,0);
+  //x=abs(z), lower.tail=FALSE, log.p=FALSE
+}
   
 /**
  * Generate the next set in a list of all possible sets of size k out of 1:n
@@ -428,3 +453,4 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
     }
   return previous;
 }
+

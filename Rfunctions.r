@@ -79,7 +79,7 @@ skeleton <- function(suffStat, indepTest, p, alpha, verbose = FALSE,
           S <- seq_len(ord)
           repeat { ## condition w.r.to all  nbrs[S] of size 'ord'
             n.edgetests[ord1] <- n.edgetests[ord1]+1
-            pval <- indepTest(x,y, nbrs[S], suffStat)
+            pval <- indepTest(x,y, nbrs[S], suffStat$C)
             ## pval <- dsepTest(x,y,nbrs[S],gTrue,jp = jp)
             if (verbose) cat("x=",x," y=",y," S=",nbrs[S],": pval =",pval,"\n")
             if (is.na(pval)) pval <- if(NAdelete) 1 else 0
@@ -142,15 +142,16 @@ pcorOrder <- function(i,j, k, C, cut.at = 0.9999999) {
   ## Author: Markus Kalisch, Date: 26 Jan 2006; Martin Maechler
   if (length(k)==0) {
     r <- C[i,j]
-  } else if (length(k)==1) {
-    r <- (C[i, j] - C[i, k] * C[j, k])/sqrt((1 - C[j, k]^2) * (1 - C[i, k]^2))
+  #} else if (length(k)==1) {
+  #  r <- (C[i, j] - C[i, k] * C[j, k])/sqrt((1 - C[j, k]^2) * (1 - C[i, k]^2))
   } else { ## length(k) >= 2
     ## If corpcor was decent and had a name space, we'd just use
     ## PM <- corpcor::pseudoinverse(C[c(i,j,k), c(i,j,k)])
     stopifnot(require("corpcor", quietly=TRUE))
     ## pseudoinverse to make sure no singularity problem comes up
     ## I guess, this is not optimal...
-    PM <- pseudoinverse(C[c(i,j,k), c(i,j,k)]) 
+    PM <- pseudoinverse(C[c(i,j,k), c(i,j,k)])
+    ##cat('PM',PM)
     r <- -PM[1, 2]/sqrt(PM[1, 1] * PM[2, 2])
   }
   if(is.na(r)) r <- 0

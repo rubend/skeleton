@@ -18,3 +18,10 @@ R libraries needed:
 License:
 --------
 see source files. Generally GPL 2.
+
+NOTE:
+-----
+For programmers trying to understand the code and the naming of functions in the code:
+this code is a c++ implementation of R code (written by Markus Kalisch) and was thus written to make it readable to the original author and people that already understood the R code.
+
+The style of the code might be changed later on when optimizations will be done.

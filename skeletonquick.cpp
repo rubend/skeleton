@@ -4,7 +4,7 @@ int p = as<int>(pt);
 double alpha = as<double>(alphat);
 int m_max = as<int>(m_maxt);
 NumericMatrix Corr(C);
-
+long n = as<long>(nt);
   
 //using c++ datatypes and trying to write all functions myself, 
 //i.e. not calling R from c++
@@ -24,6 +24,7 @@ std::vector<int> others(0);
 int iter =0;
 
 for (int ord = 0; ord <= m_max; ++ord)
+  //additional check for if any connections are left might be useful, especially if mmax is huge
   {
     cout << "ord = " << ord << endl;
     
@@ -32,7 +33,7 @@ for (int ord = 0; ord <= m_max; ++ord)
     row = 0; // reset to zero
     
     row = getNextRowWithConnections(row,G,p); // row == x
-    //cout << "row = " << row << endl;
+   //cout << "row = " << row << endl;
 
     //exit(0);
     
@@ -107,15 +108,17 @@ for (int ord = 0; ord <= m_max; ++ord)
 		//pval = pcorOrder(x,y,k,C)
 		//cout << "k " << k.back() << endl;
 		
-		pval = pcorOrder(x,y,k,Corr);
+		//WRONG! pval = pcorOrder(x,y,k,Corr);
+		pval = gaussCItest(x,y,k,Corr,n);
+		
 		//cout << "x y " << x << " " << y << endl;
 		
-		//cout << "pval = " << pval << endl;
+		cout << "pval = " << pval << endl;
 		
 		iter++;
 		
-		if ((ord == 0 && pval <  alpha) || (ord >0 && pval >= alpha))
-		  //if (pval <  alpha)
+		//if ((ord == 0 && pval <  alpha) || (ord >0 && pval >= alpha))
+		if (pval >=  alpha)
 		  {
 		    cout << "x " << x << " and y " << y << endl;
 		    
@@ -145,5 +148,21 @@ for (int ord = 0; ord <= m_max; ++ord)
     //}
   }
 //convert G to a logicalMatrix for returning to R?
-  
+
+//std::vector<int> t(1);
+//t[0] = 1;
+///cout << "pcor test: " << pcorOrder(0,2,t,Corr) << endl;
+//t[0] = 3;
+//cout << "pcor test: " << pcorOrder(0,2,t,Corr) << endl;
+//t[0] = 4;
+//cout << "pcor test: " << pcorOrder(0,2,t,Corr) << endl;
+//t.resize(2);
+
+//t[0] = 1;
+//t[0] = 3;
+//cout << "pcor test: " << pcorOrder(0,2,t,Corr) << endl;
+//t.resize(0);
+//cout << "pcor test: " << pcorOrder(0,3,t,Corr) << endl;
+//values don't seem to match :/
+
 return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object

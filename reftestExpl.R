@@ -3,7 +3,7 @@ library(pcalg)
 
 library(inline)
 ## test!
-funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body=paste(readLines("skeletonquick.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),collapse="\n"),plugin="RcppArmadillo")
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric",nt="long"),body=paste(readLines("skeletonquick.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),collapse="\n"),plugin="RcppArmadillo")
 
 ## NOTE: Usually, we would ESTIMATE the correlation matrix; but since we are
 ## only interested in the runtime performance, we can use the true correlation
@@ -77,7 +77,7 @@ estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
   ##skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)
   ##skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=10000,C=corMat)
   ##for testing purposes
-  skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=5,C=corMat)
+  skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=5,C=corMat,nt=n)
   ##as(skeleton.fit@graph, "matrix")
   as(skeleton.fit, "matrix")
 }
@@ -100,8 +100,7 @@ estSkel2 <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
 
   p <- ncol(corMat)
   ## define independence test (partial correlations)
-  ##indepTest <- gaussCItest
-  indepTest <- pcorOrder
+  indepTest <- gaussCItest
   ## define sufficient statistics
   suffStat <- list(C = corMat, n = n)
   skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)
@@ -118,12 +117,13 @@ en <- 2
 i <- 1
 cat("i = ",i,"\n")
 tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
-res <- estSkel2(tmp$corMat,verbose=TRUE) ## estimate skel perfectly (b/c true cor. mat. used)
-res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
+##res <- estSkel2(tmp$corMat,verbose=TRUE) ## estimate skel perfectly (b/c true cor. mat. used)
+##res == tmp$skel
+res2 <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
 tmp$corMat
 tmp$skel
-res == tmp$skel ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
-res
+res2 == tmp$skel ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
+##res == res2
 
 ##for (i in 1:nreps) {
  ## cat("i = ",i,"\n")
