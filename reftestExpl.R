@@ -122,6 +122,7 @@ tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
 res2 <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
 tmp$corMat
 tmp$skel
+res2
 res2 == tmp$skel ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
 ##res == res2
 

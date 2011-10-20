@@ -281,8 +281,7 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
   if (k.size() == 0)
     {
       r = Corr(i,j);
-    } 
-  /**
+    }
    //optimization for the case k.size() ==1 
    else if(k.size() ==1)
    {
@@ -291,8 +290,8 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
    //use vector product calls and power taking and so on ...
    //maybe use armadillo for this?
       
-   r = (Corr(i,j)-Corr(i,k)*Corr(j,k))/sqrt((1-pow(Corr(j,k),2))*(1-Corr(i,k)^2));
-   }*/ 
+     r = (Corr(i,j)-Corr(i,k[0])*Corr(j,k[0]))/sqrt((1-pow(Corr(j,k[0]),2))*(1-pow(Corr(i,k[0]),2)));
+   } 
   else
     {
       // push_front only works on integervector of rcpp library, 
