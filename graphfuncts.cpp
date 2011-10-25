@@ -250,7 +250,7 @@ namespace arma
  */
 LogicalMatrix convertToLogical(bool G[],int p)
 {
-  cout << "converttological" << endl;
+  //cout << "converttological" << endl;
 
   LogicalMatrix log(p,p);
   
@@ -365,7 +365,7 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 		    
       //PM <- pseudoinverse(C(c(i,j,k),c(i,j,k)))
       //return -PM[1,2]/sqrt(PM[1,1]*PM[2,2]);
-      cout << "PM " << endl << PM << endl;
+      // cout << "PM " << endl << PM << endl;
       
       r = -PM(0,1)/sqrt(PM(0,0)*PM(1,1));
       
