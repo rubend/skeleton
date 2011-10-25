@@ -43,23 +43,6 @@ for (int ord = 0; ord <= m_max; ++ord)
       {
 	x = row; // just temporary variable for clarity when calling pcororder
 	getRowConnections(row,G,p,connections); // getting the connections belonging to the row
-	//cout << "Connection : "<<endl;
-	
-	//for (int i = 0; i < p-1; ++i)
-	// {
-	//  cout << connections[i] << endl;
-	//}
-
-	//cout << "For row = " << row-1 << endl;
-	//for (int i = 0; i < p; ++i)
-	// {
-	//  cout << "G[0," <<i<<"] = " << G[i] << endl;
-	//}
-	//for (int i = 0; i < p; ++i)
-	//{
-	//  cout << "G[1," <<i<<"] = " << G[p+i] << endl;
-	//}
-
 	for (int i = 0; i < p-1; ++i)
 	  {
 	    //one of the remaining edge tests
@@ -89,20 +72,6 @@ for (int ord = 0; ord <= m_max; ++ord)
 	    while(subset.size() == 0 || subset[0] != -1)
 	      {
 		//subset.size() == 0 is possible if ord == 0, subset[0] == -1 is the stop condition
-		//cout << "ord " << ord << endl;
-		//cout << "x " << x << "y " << y << endl;
-		
-		//DEBUG
-		//for (int i = 0; i < sizeothers; ++i)
-		// {
-		//   cout << "others elements " << others[i] << endl;	
-		// }
-
-		//DEBUG
-		//for (int i = 0; i < subset.size(); ++i)
-		// {
-		//   cout << "subset elements " << subset[i] << endl;	
-		// }
 		
 		std::vector<int> k = getSubset(others,subset); //does this work? check! otherwise write own function that does this.
 		//pval = pcorOrder(x,y,k,C)
@@ -134,35 +103,7 @@ for (int ord = 0; ord <= m_max; ++ord)
 	  }
 	
 	row = getNextRowWithConnections(row+1,G,p);
-	
-	//cout << "row = " << row << endl;
-
       }
-    //cout << "Ended ord = " << ord << endl;
-    //for (int i = 0; i < p; ++i)
-    // {
-    //	for (int j = 0; j < p; ++j)
-    //	  {
-    //	    cout << "G["<<i<<","<<j<<"] = " << G[i*p+j]<<endl;
-    //	  }
-    //}
   }
-//convert G to a logicalMatrix for returning to R?
-
-//std::vector<int> t(1);
-//t[0] = 1;
-///cout << "pcor test: " << pcorOrder(0,2,t,Corr) << endl;
-//t[0] = 3;
-//cout << "pcor test: " << pcorOrder(0,2,t,Corr) << endl;
-//t[0] = 4;
-//cout << "pcor test: " << pcorOrder(0,2,t,Corr) << endl;
-//t.resize(2);
-
-//t[0] = 1;
-//t[0] = 3;
-//cout << "pcor test: " << pcorOrder(0,2,t,Corr) << endl;
-//t.resize(0);
-//cout << "pcor test: " << pcorOrder(0,3,t,Corr) << endl;
-//values don't seem to match :/
 
 return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object

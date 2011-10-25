@@ -285,23 +285,11 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
    //optimization for the case k.size() ==1 
    else if(k.size() ==1)
    {
-   //no match for call to Rcpp::NumericMatrix with (int,vector<int>)
-      
-   //use vector product calls and power taking and so on ...
-   //maybe use armadillo for this?
-      
      r = (Corr(i,j)-Corr(i,k[0])*Corr(j,k[0]))/sqrt((1-pow(Corr(j,k[0]),2))*(1-pow(Corr(i,k[0]),2)));
    } 
   else
-    {
-      // push_front only works on integervector of rcpp library, 
-      // maybe better to use stl vectors
-      //k.push_front(j);
-      //k.push_front(i);
-      //NumericMatrix sub = C(k,k);
-      
+    { 
       int m=Corr.nrow(),n=Corr.ncol();
-     
       
       arma::mat C(Corr.begin(),m,n,false);//reuses memory and avoids extra copy
       //need an efficient way to get the submatrix off of this. Problem is that i j k not 
@@ -348,8 +336,10 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 	}
       catch(runtime_error re)
 	{
+	  //the matrix appears to be singular
 	  cout << "Caught error yes mam!" << endl;
-	  
+	  cout << "The matrix appears to be singular :s" << endl;
+
 	  cout << "Some DEBUG info: "<<endl;
 	  cout << "i = " << i << " j = " << j << endl;
 
@@ -361,7 +351,6 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 
 	  cout << Corr << endl;
 
-	  //the matrix appears to be singular
 	  cout << sub << endl;
 	  //otherwise we would just get a matrix index out of bounds error right below here.
 	}
@@ -375,11 +364,7 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       //return -PM[1,2]/sqrt(PM[1,1]*PM[2,2]);
       cout << "PM " << endl << PM << endl;
       
-      r = -PM(1,2)/sqrt(PM(1,1)*PM(2,2));      
-      //r <- -PM(1,2)/sqrt(PM(1,1)*PM(2,2))
-      //invert matrix better done by rcpparmadillo instead of calling the R function
-      //not much improvement expected calling the R function :p. maybe good for comparison
-      //cout <<"r = " << r << endl;
+      r = -PM(0,1)/sqrt(PM(0,0)*PM(1,1));
       
     }
   //if(is.na(r)) r<-0
