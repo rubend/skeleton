@@ -56,9 +56,17 @@ en <- 2
 i <- 1
 cat("i = ",i,"\n")
 tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
-i <- 3
+
+
+## cases to test
+## x y S
+## 3 4 2
+## 3 5 2
+## 4 5 2
+
+i <- 4
 j <- 5
-k <- c(2,4)
+k <- c(2)
 cat("i = ",i,"j = ",j,"\n")
 
 t <- pcorOrder2(i,j,k,tmp$corMat)

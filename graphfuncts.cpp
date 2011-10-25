@@ -77,8 +77,9 @@ void getRowConnections(int row,bool G[],int p,int* connections)
   
   int index = 0;//keeping track of the index in the connections vector
   
-  //there is still a row >= startrow with connections
-  for (int j = row; j < p; ++j)
+  //the search for a connection has to start from 0 because of the possibility of for example node 2 to be connected to node 0.
+  //will see if you put j=row as initial value, you don't get the correct result!
+  for (int j = 0; j < p; ++j)
     {
       if (G[row*p + j] == true)
 	{
@@ -111,7 +112,7 @@ int getNextRowWithConnections(int startrow,bool G[],int p)
   //cout << "startrow = " << startrow << endl;
   //cout << " p = " << p << endl;
   
-  
+  //there is still a row >= startrow with connections
   for (int row = startrow; row < p; row++)
     {
       
@@ -332,17 +333,22 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       
       try
 	{
-	  PM = arma::inv(sub);
+
+	  //the correlation matrix is always a positive semi definite matrix
+	  //inverse can be done faster if the matrix is a positive definite symmetric matrix
+	  //we specify this so: inv( sympd(sub) )
+	  PM = arma::inv(arma::sympd(sub));
+	  //PM = arma::inv(sub); // older version
 	}
       catch(runtime_error re)
 	{
 	  //the matrix appears to be singular
-	  cout << "Caught error yes mam!" << endl;
+	  cout << "Caught error yes m'am!" << endl;
 	  cout << "The matrix appears to be singular :s" << endl;
 
 	  cout << "Some DEBUG info: "<<endl;
 	  cout << "i = " << i << " j = " << j << endl;
-
+	  cout << "k = ";
 	  for(int l = 0; l< k.size();l++)
 	    {
 	      cout << k[l] << " , ";
@@ -356,9 +362,6 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 	}
       //cout << "PM size " << PM.size() << endl;
       
-      //the correlation matrix is always a positive semi definite matrix
-      //inverse can be done faster if the matrix is a positive definite symmetric matrix
-      //we specify this so: inv( sympd(sub) )
 		    
       //PM <- pseudoinverse(C(c(i,j,k),c(i,j,k)))
       //return -PM[1,2]/sqrt(PM[1,1]*PM[2,2]);

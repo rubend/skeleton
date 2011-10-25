@@ -23,6 +23,7 @@ std::vector<int> others(0);
 //ord = 0 gives problems with subset size and the like, right? is it really needed?
 int iter =0;
 
+//SPEEDUP: parallelise with openmp!
 for (int ord = 0; ord <= m_max; ++ord)
   //additional check for if any connections are left might be useful, especially if mmax is huge
   {
@@ -80,12 +81,23 @@ for (int ord = 0; ord <= m_max; ++ord)
 		//WRONG! pval = pcorOrder(x,y,k,Corr);
 		pval = gaussCItest(x,y,k,Corr,n);
 		
-		//cout << "x y " << x << " " << y << endl;
+		if(k.size()>0)
+		  {
+		    cout <<"k ="<< k[0]<<endl;
+		    cout << "x = "<<x+1 <<"y = " << y+1 << " S[0]=" << k[0] << " : pval = " << pval << endl;
+		  }else
+		  {
+		    
+		    cout << "x = "<<x+1 <<"y = " << y+1 << " S[0]=" << " : pval = " << pval << endl;
+		  }
 		
 		cout << "pval = " << pval << endl;
 		
 		iter++;
-		
+		if (x == 2 && y == 3 && k.size()==1 )
+		  {
+		    cout << "pval in case x 2 y 3 k " << k[0] <<" =" << pval << endl;
+		  }
 		//if ((ord == 0 && pval <  alpha) || (ord >0 && pval >= alpha))
 		if (pval >=  alpha)
 		  {
