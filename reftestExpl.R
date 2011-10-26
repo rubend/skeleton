@@ -78,6 +78,7 @@ estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
   ##skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)
   ##skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=10000,C=corMat)
   ##for testing purposes
+  ## IMPORTANT change m_maxt according to en
   skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=5,C=corMat,nt=n)
   ##as(skeleton.fit@graph, "matrix")
   as(skeleton.fit, "matrix")
