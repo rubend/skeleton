@@ -79,7 +79,7 @@ estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
   ##skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=10000,C=corMat)
   ##for testing purposes
   ## IMPORTANT change m_maxt according to en
-  skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=5,C=corMat,nt=n)
+  cat(system.time(skeleton.fit <- funskeleton(pt=p,alphat=alpha,m_maxt=5,C=corMat,nt=n)))
   ##as(skeleton.fit@graph, "matrix")
   as(skeleton.fit, "matrix")
 }
@@ -105,7 +105,7 @@ estSkel2 <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
   indepTest <- gaussCItest
   ## define sufficient statistics
   suffStat <- list(C = corMat, n = n)
-  skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)
+  cat(system.time(skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)))
   as(skeleton.fit@graph, "matrix")
  }
 
@@ -125,6 +125,19 @@ estSkel2 <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
 ##res2 == tmp$skel ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
 ##res == res2
 
+
+## timer performance test
+ok <- rep(NA, nreps)
+p <- 100
+en <- 3
+tmp <- makeGraph(p, en, seed = 17)
+cat("Time running R code")
+res2 <- estSkel2(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
+cat("Time running cpp code")
+res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
+
+all(res2 == res)
+
 ## TEST 1: Some random graphs of rather small size - true cor. mat
 nreps <- 100
 ok <- rep(NA, nreps)
@@ -137,36 +150,6 @@ for (i in 1:nreps) {
   ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
 }
 
-## Runtime timing
-fsimulcpp <- function(){
-	nreps <- 100
-ok <- rep(NA, nreps)
-p <- 100
-en <- 3
-for (i in 1:nreps) {
-  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
-  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
-  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
-  ok
-}
-}
-
-fsimulR <- function(){
-	nreps <- 100
-ok <- rep(NA, nreps)
-p <- 100
-en <- 3
-for (i in 1:nreps) {
-  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
-  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
-  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
-}
-ok
-}
-cat("Time running R code")
-system.time(fsimulR())
-cat("Time running cpp code")
-system.time(fsimulcpp())
 
 
 ## TEST 2: Some random graphs of rather small size - est. cor. mat
