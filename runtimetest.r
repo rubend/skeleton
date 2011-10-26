@@ -1,3 +1,6 @@
+## need to be in correct dir to be able to compile the cpp files!
+## setwd("/Users/rubendezeure/Documents/studies/hs_2011/semester_paper/skeleton")
+## in my case on laptop
 source('prepareruntime.r') ## get everything loaded and compiled
 ## testing runtimes in a structured way
 en <- c(3,5)
