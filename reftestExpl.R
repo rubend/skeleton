@@ -55,7 +55,7 @@ list(skel = amat, corMat = corMat, g = rDAG)
 
 estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
 {
-  ## Purpose: Estimate the skeleton
+  ## Purpose: Estimate the skeleton using rcpp function
   ## ----------------------------------------------------------------------
   ## Arguments:
   ## - corMat: Correlation Matrix of true graph
@@ -67,7 +67,8 @@ estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
   ## ----------------------------------------------------------------------
   ## Value: Estimated adjacency matrix
   ## ----------------------------------------------------------------------
-  ## Author: Markus Kalisch, Date: 20 Sep 2011, 08:40
+  ## Authors: Markus Kalisch, Date: 20 Sep 2011, 08:40
+  ## Modified by Ruben Dezeure
 
   p <- ncol(corMat)
   ## define independence test (partial correlations)
@@ -84,7 +85,7 @@ estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
 
 estSkel2 <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
 {
-  ## Purpose: Estimate the skeleton
+  ## Purpose: Estimate the skeleton using R algorithm
   ## ----------------------------------------------------------------------
   ## Arguments:
   ## - corMat: Correlation Matrix of true graph
@@ -126,19 +127,79 @@ estSkel2 <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
 ## TEST 1: Some random graphs of rather small size - true cor. mat
 nreps <- 100
 ok <- rep(NA, nreps)
-p <- 7
+p <- 10
 en <- 3
-##for (i in 1:nreps) {
-##  cat("i = ",i,"\n")
-##  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true ##cor. matrix
-##  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true ##cor. mat. used)
-##  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH ##TRUTH (tmp$amat)
-##}
-## look at one case:
-i <- nreps
-tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
+for (i in 1:nreps) {
+  cat("i = ",i,"\n")
+  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
   res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
-  res == tmp$skel	
-##res2 <- estSkel2(tmp$corMat,verbose=TRUE) ## to compare output
+  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
+}
 
-##TEST 2-4 see email
+## Runtime timing
+fsimulcpp <- function(){
+	nreps <- 100
+ok <- rep(NA, nreps)
+p <- 100
+en <- 3
+for (i in 1:nreps) {
+  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
+  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
+  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
+  ok
+}
+}
+
+fsimulR <- function(){
+	nreps <- 100
+ok <- rep(NA, nreps)
+p <- 100
+en <- 3
+for (i in 1:nreps) {
+  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
+  res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
+  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
+}
+ok
+}
+cat("Time running R code")
+system.time(fsimulR())
+cat("Time running cpp code")
+system.time(fsimulcpp())
+
+
+## TEST 2: Some random graphs of rather small size - est. cor. mat
+## This should be faster, since the estimated cor. mat contains errors
+## that make the algo stop too early
+ok <- rep(NA, nreps)
+p <- 10
+n <- 1000
+en <- 3
+for (i in 1:nreps) {
+  cat("i = ",i,"\n")
+  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
+  corMat <- cor(rmvDAG(n, tmp$g)) ## generate data and estimate cor. matrix
+  res <- estSkel(corMat, n = n) ## estimate skel using rcpp algorithm
+  ok[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH ESTIMATE (res)
+}
+
+ok2 <- rep(NA, nreps) ## to store the result of the R algorithm
+for (i in 1:nreps) {
+  cat("i = ",i,"\n")
+  tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
+  corMat <- cor(rmvDAG(n, tmp$g)) ## generate data and estimate cor. matrix
+  res <- estSkel2(corMat, n = n) ## estimate skel using R algorithm
+  ok2[i] <- all(res == tmp$skel) ## COMPARE YOUR SOLUTION WITH ESTIMATE (res)
+}
+
+## TEST 3: Empty graph
+p <- 10
+tmp <- makeGraph(p, 0, seed = 42) ## generate skeleton and true cor. matrix
+res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
+all(tmp$skel == res)
+
+## TEST 4: Complete graph
+p <- 5
+tmp <- makeGraph(p, p-1, seed = 42) ## generate skeleton and true cor. matrix
+res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
+all(tmp$skel == res)
