@@ -8,7 +8,7 @@ The steps:
 
 call    skeleton(p,alpha,m_max,Corrmat)
 
-See also the test file refTestExpl.R.
+See also the test file prepareruntime.r.
 
 Compilation outside of R:
 -------------------------
