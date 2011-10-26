@@ -116,10 +116,12 @@ int getNextRowWithConnections(int startrow,bool G[],int p)
   for (int row = startrow; row < p; row++)
     {
       
-      for (int i = row; i < p; i++)
+      for (int i = 0; i < p; i++)
 	{
 	  
-	  //only search through the upper triangular
+	  //\\WRONG//only search through the upper triangular
+	  //search through the whole row, this was an attempt to be efficient = optimise
+	  //but it makes the code wrong!
 	  if(G[row*p+i] == 1)
 	    {
 	      returnrow = row;
@@ -383,6 +385,9 @@ double zStat(int i,int j,std::vector<int> k,NumericMatrix Corr,long n)
   double r = pcorOrder(i,j,k,Corr);
   r = sqrt(n-k.size()-3.0)*(0.5*log((1.0+r)/(1.0-r)));
   //check if na? see R code
+  if(R_IsNA(r))
+    r = 0.0;
+  
   return r;
 }
 

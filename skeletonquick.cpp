@@ -27,7 +27,7 @@ int iter =0;
 for (int ord = 0; ord <= m_max; ++ord)
   //additional check for if any connections are left might be useful, especially if mmax is huge
   {
-    // cout << "ord = " << ord << endl;
+    //cout << "ord = " << ord << endl;
     
     //look for next row with connections then iterate over the remaining connections
     //alternative: save all connections explicitly in double array and loop over those.
@@ -81,15 +81,16 @@ for (int ord = 0; ord <= m_max; ++ord)
 		//WRONG! pval = pcorOrder(x,y,k,Corr);
 		pval = gaussCItest(x,y,k,Corr,n);
 		
-		// if(k.size()>0)
-		//   {
-		//     cout <<"k ="<< k[0]<<endl;
-		//     cout << "x = "<<x+1 <<"y = " << y+1 << " S[0]=" << k[0] << " : pval = " << pval << endl;
-		//   }else
-		//   {
+		//COMMENT
+		//if(k.size()>0)
+		//  {
+		      //cout <<"k ="<< k[0]<<endl;
+		//    cout << "x = "<<x+1 <<"y = " << y+1 << " S[0]=" << k[0] << " : pval = " << pval << endl;
+		//  }else
+		//  {
 		    
-		//     cout << "x = "<<x+1 <<"y = " << y+1 << " S[0]=" << " : pval = " << pval << endl;
-		//   }
+		//    cout << "x = "<<x+1 <<"y = " << y+1 << " S[0]=" << " : pval = " << pval << endl;
+		//  }
 		
 		// cout << "pval = " << pval << endl;
 		
