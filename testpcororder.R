@@ -51,9 +51,9 @@ list(skel = amat, corMat = corMat, g = rDAG)
 ## TEST 1: Some random graphs of rather small size - true cor. mat
 nreps <- 100
 ok <- rep(NA, nreps)
-p <- 5
-en <- 2
-i <- 1
+p <- 7
+en <- 3
+i <- nreps
 cat("i = ",i,"\n")
 tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
 
@@ -64,9 +64,9 @@ tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
 ## 3 5 2
 ## 4 5 2
 
-i <- 4
-j <- 5
-k <- c(2)
+i <- 7
+j <- 1
+k <- c(2,3,4)
 cat("i = ",i,"j = ",j,"\n")
 
 t <- pcorOrder2(i,j,k,tmp$corMat)

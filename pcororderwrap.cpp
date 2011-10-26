@@ -1,5 +1,6 @@
 int it = as<int> (i) -1;
 int jt = as<int> (j) -1;
+
 //R vector convert to std::vector k
 IntegerVector l(k);
 std::vector<int> kt(l.size());

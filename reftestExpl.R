@@ -110,23 +110,23 @@ estSkel2 <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
 #debug test cases
 
 ## TEST 0: Simple test case
-nreps <- 100
-ok <- rep(NA, nreps)
-p <- 5
-en <- 2
-i <- 1
-cat("i = ",i,"\n")
-tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
+##nreps <- 100
+##ok <- rep(NA, nreps)
+##p <- 5
+##en <- 2
+##i <- 1
+##cat("i = ",i,"\n")
+##tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
 ##res <- estSkel2(tmp$corMat,verbose=TRUE) ## estimate skel perfectly (b/c true cor. mat. used)
 ##res == tmp$skel
-res2 <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
-res2 == tmp$skel ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
+##res2 <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
+##res2 == tmp$skel ## COMPARE YOUR SOLUTION WITH TRUTH (tmp$amat)
 ##res == res2
 
 ## TEST 1: Some random graphs of rather small size - true cor. mat
 nreps <- 100
 ok <- rep(NA, nreps)
-p <- 10
+p <- 7
 en <- 3
 ##for (i in 1:nreps) {
 ##  cat("i = ",i,"\n")
@@ -138,6 +138,7 @@ en <- 3
 i <- nreps
 tmp <- makeGraph(p, en, seed = i) ## generate skeleton and true cor. matrix
   res <- estSkel(tmp$corMat) ## estimate skel perfectly (b/c true cor. mat. used)
-res2 <- estSkel2(tmp$corMat,verbose=TRUE) ## to compare output
+  res == tmp$skel	
+##res2 <- estSkel2(tmp$corMat,verbose=TRUE) ## to compare output
 
 ##TEST 2-4 see email
