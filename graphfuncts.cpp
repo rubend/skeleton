@@ -96,6 +96,30 @@ void getRowConnections(int row,bool G[],int p,int* connections)
 }
 
 /**
+ * find a row with enough neighbours as we need (neighboursneeded),Return the row otherwise return -1 ==> couldn't find a row that satisfies this rule
+ */
+int getRowWithEnoughConnections(bool G[],int p,int neighboursneeded)
+{ 
+  int connectionsInRow = 0;
+  for (int i = 0; i < p; ++i)
+    {
+      for (int j = 0; j < p; ++j)
+	{
+	  if(G[i,j] == true)
+	    {
+	      connectionsInRow++;
+	    }
+	}
+      if (connectionsInRow >= neighboursneeded)
+	{
+	  return i;
+	}
+      connectionsInRow = 0;
+    }
+  return -1; //means there isn't any!
+}
+
+/**
  * startrow = the row from which to start looking for a row with connections in the graph
  * G = the graph
  * p = the number of rows
@@ -121,6 +145,57 @@ int getNextRowWithConnections(int startrow,bool G[],int p)
   //seems like there are no more rows >= startrows containing connections
   return returnrow;
 }
+
+/**
+ * get the maximum number of neighbours a node in the graph has.
+ * Might be faster to  keep track of how many neighbours each node has and updating and looking for new max when one decreases and so on ...
+ */
+int getMaxConnectionsLeft(bool G[],int p)
+{
+  int currentMax = 0;
+  int connectionsInRow = 0;
+  for (int i = 0; i < p; ++i)
+    {
+      for (int j = 0; j < p; ++j)
+	{
+	  if(G[i,j] == true)
+	    {
+	      connectionsInRow++;
+	    }
+	}
+      if (connectionsInRow > currentMax)
+	{
+	  currentMax = connectionsInRow;
+	}
+      connectionsInRow =0;
+    }
+  return currentMax;  
+}
+
+/**
+ * find a row with more neighbours then neighboursneeded, if you do find one return true. Else false.
+ */
+bool graphContainsNodeWithMoreNeighbours(bool G[],int p,int neighboursneeded)
+{
+  int connectionsInRow = 0;
+  for (int i = 0; i < p; ++i)
+    {
+      for (int j = 0; j < p; ++j)
+	{
+	  if(G[i,j] == true)
+	    {
+	      connectionsInRow++;
+	    }
+	}
+      if (connectionsInRow >= neighboursneeded)
+	{
+	  return true;
+	}
+      connectionsInRow =0;
+    }
+  return false;  
+}
+
 
 /**
  * get the other connection when excluding y

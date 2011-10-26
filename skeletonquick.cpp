@@ -41,13 +41,34 @@ for (int ord = 0; ord <= m_max; ++ord)
   //additional check for if any connections are left might be useful, especially if mmax is huge
   {
     //cout << "ord = " << ord << endl;
+    //faster alternative: look in graph to find a node with more neighbours than ord, (if you find one --> quit)
+    //ALTERNATIVE: keep track of number of neighbours each node has, would cost more memory (a vector of the number of nodes) but cost less to search each iteration!
+    //mark -1 the nodes that are already not worth visiting anymore --> change way of picking next row!
+    //if(ord > getMaxConnectionsLeft(G,p))
+    //if(!graphContainsNodeWithMoreNeighbours(G,p,ord))
+      // {
+      // 	//our automatic stopping condition
+      // 	cout <<" Iteration stopped at ord = " << ord << endl;
+	
+      // 	break;
+      // }
+    //is done in getrowwithenoughconnections!
     
     //look for next row with connections then iterate over the remaining connections
     //alternative: save all connections explicitly in double array and loop over those.
-    row = 0; // reset to zero
     
-    row = getNextRowWithConnections(row,G,p); // row == x
-      
+    //row = 0; // reset to zero
+    
+    //this method tries to find a row with enough connections (>=ord) if there doesn't exist any --> we stop calculations
+    row = 0;
+    row = getRowWithEnoughConnections(G,p,ord); // row == x
+    if(row == -1)
+      {
+	//means that there is no row with a number of neighbours >= ord
+	cout <<" Iteration stopped at ord = " << ord << endl;
+	break; // can stop the calculations completely
+      }
+    
     while(row != -1)
       {
 	x = row; // just temporary variable for clarity when calling pcororder
@@ -74,7 +95,6 @@ for (int ord = 0; ord <= m_max; ++ord)
 	    while(subset.size() == 0 || subset[0] != -1)
 	      {
 		//subset.size() == 0 is possible if ord == 0, subset[0] == -1 is the stop condition
-		
 		std::vector<int> k = getSubset(others,subset); 
 
 		pval = gaussCItest(x,y,k,Corr,n);
@@ -91,6 +111,8 @@ for (int ord = 0; ord <= m_max; ++ord)
 	      }
 	  }
 	
+	//OPTIMISATION: look only for next row with ENOUGH connections?
+	//not that good an optimisation tss tss tss look at what happens in a loop then
 	row = getNextRowWithConnections(row+1,G,p);
       }
   }
