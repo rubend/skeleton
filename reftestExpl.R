@@ -105,7 +105,7 @@ estSkel2 <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE)
   indepTest <- gaussCItest
   ## define sufficient statistics
   suffStat <- list(C = corMat, n = n)
-  cat(system.time(skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose)))
+  cat(system.time(skeleton.fit <- skeleton(suffStat, indepTest, p, alpha, verbose = verbose,m.max=5)))
   as(skeleton.fit@graph, "matrix")
  }
 
