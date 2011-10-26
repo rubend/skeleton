@@ -1,12 +1,22 @@
 README file
 -----------
-The easiest way to compile this code is using the inline library in R.
+The easiest way to compile & run this code is using the inline library in R.
 The steps:
     .	setwd($directory-with-source-files$)
     .	load library(inline) library(pcalg)
     .	 skeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric"),body=paste(readLines("skeletonquick.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),collapse="\n"),plugin="RcppArmadillo")
 
+call    skeleton(p,alpha,m_max,Corrmat)
+
 See also the test file refTestExpl.R.
+
+Compilation outside of R:
+-------------------------
+not supported yet, because of issues with the makefile
+
+Test runs
+---------
+see the test file refTestExpl.R
 
 R libraries needed:
 ------------------
@@ -22,6 +32,6 @@ see source files. Generally GPL 2.
 NOTE:
 -----
 For programmers trying to understand the code and the naming of functions in the code:
-this code is a c++ implementation of R code (written by Markus Kalisch) and was thus written to make it readable to the original author and people that already understood the R code.
+this code is a c++ implementation of the skeleton R code and was thus written to make it readable to the original author and people that already understood the R code.
 
 The style of the code might be changed later on when optimizations will be done.

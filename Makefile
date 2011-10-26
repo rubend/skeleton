@@ -1,3 +1,5 @@
+## makefile not up to date and not working
+## TESTING PHASE
 
 ## comment this out if you need a different version of R, 
 ## and set set R_HOME accordingly as an environment variable
