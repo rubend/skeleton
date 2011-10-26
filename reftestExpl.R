@@ -19,8 +19,7 @@ source('prepareruntime.r') ## get everything loaded and compiled
 
 
 ## timer performance test
-ok <- rep(NA, nreps)
-p <- 100
+p <- 20
 en <- 3
 tmp <- makeGraph(p, en, seed = 17)
 cat("Time running R code")

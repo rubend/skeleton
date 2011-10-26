@@ -101,15 +101,16 @@ void getRowConnections(int row,bool G[],int p,int* connections)
 int getRowWithEnoughConnections(bool G[],int p,int neighboursneeded)
 { 
   int connectionsInRow = 0;
+  cout << "neighboursneeded = " << neighboursneeded << endl;
   for (int i = 0; i < p; ++i)
     {
       for (int j = 0; j < p; ++j)
 	{
-	  if(G[i,j] == true)
+	  if(G[i*p+j] == true)
 	    {
 	      connectionsInRow++;
 	    }
-	}
+	}      
       if (connectionsInRow >= neighboursneeded)
 	{
 	  return i;
@@ -158,7 +159,7 @@ int getMaxConnectionsLeft(bool G[],int p)
     {
       for (int j = 0; j < p; ++j)
 	{
-	  if(G[i,j] == true)
+	  if(G[i*p+j] == true)
 	    {
 	      connectionsInRow++;
 	    }
@@ -182,7 +183,7 @@ bool graphContainsNodeWithMoreNeighbours(bool G[],int p,int neighboursneeded)
     {
       for (int j = 0; j < p; ++j)
 	{
-	  if(G[i,j] == true)
+	  if(G[i*p+j] == true)
 	    {
 	      connectionsInRow++;
 	    }
@@ -462,5 +463,20 @@ std::vector<int> getNextSet(int n, int k,std::vector<int> previous)
 	}
     }
   return previous;
+}
+
+void printOutG(bool G[],int p)
+{
+  cout << "Printout G:" << endl;
+  
+  for (int i = 0; i < p; ++i)
+    {
+      for (int j = 0; j < p; ++j)
+	{
+	  cout << G[i*p+j] << " " << endl;
+	}
+      cout << endl;
+    }
+  cout << "end of G" << endl;
 }
 

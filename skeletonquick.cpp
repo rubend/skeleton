@@ -61,6 +61,8 @@ for (int ord = 0; ord <= m_max; ++ord)
     
     //this method tries to find a row with enough connections (>=ord) if there doesn't exist any --> we stop calculations
     row = 0;
+    //printOutG(G,p);
+    
     row = getRowWithEnoughConnections(G,p,ord); // row == x
     if(row == -1)
       {
