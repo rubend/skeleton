@@ -67,7 +67,7 @@ for (int ord = 0; ord <= m_max; ++ord)
     if(row == -1)
       {
 	//means that there is no row with a number of neighbours >= ord
-	cout <<" Iteration stopped at ord = " << ord << endl;
+	//cout <<" Iteration stopped at ord = " << ord << endl;
 	break; // can stop the calculations completely
       }
     

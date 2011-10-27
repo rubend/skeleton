@@ -2,6 +2,13 @@ library(pcalg)
 
 library(inline)
 ## test!
+
+## to get openmp working
+#settings <- getPlugin("RcppArmadillo")
+#settings$env$PKG_CXXFLAGS <- paste('-fopenmp', settings$env$PKG_CXXFLAGS)
+#settings$env$PKG_LIBS <- paste('-fopenmp -lgomp', settings$env$PKG_LIBS)
+##then still have to add argument setting=settings in the cxxfunction call
+
 funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric",nt="long"),body=paste(readLines("skeletonquick.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),collapse="\n"),plugin="RcppArmadillo")
 
 ## NOTE: Usually, we would ESTIMATE the correlation matrix; but since we are
@@ -82,7 +89,7 @@ estSkel <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE,m_max = 100
   ##as(skeleton.fit@graph, "matrix")
   as(skeleton.fit, "matrix")
 }
-estSkelTime <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE, m_max = 100000)
+estSkeltime <- function(corMat, n = 10^15, alpha = 0.05, verbose = FALSE, m_max = 100000)
 {
   ## Purpose: Estimate the skeleton using rcpp function
   ## ----------------------------------------------------------------------

@@ -101,7 +101,7 @@ void getRowConnections(int row,bool G[],int p,int* connections)
 int getRowWithEnoughConnections(bool G[],int p,int neighboursneeded)
 { 
   int connectionsInRow = 0;
-  cout << "neighboursneeded = " << neighboursneeded << endl;
+  //cout << "neighboursneeded = " << neighboursneeded << endl;
   for (int i = 0; i < p; ++i)
     {
       for (int j = 0; j < p; ++j)
