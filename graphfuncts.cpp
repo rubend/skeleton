@@ -413,7 +413,7 @@ double zStat(int i,int j,std::vector<int> k,NumericMatrix Corr,long n)
 {
   double r = pcorOrder(i,j,k,Corr);
   r = sqrt(n-k.size()-3.0)*(0.5*log((1.0+r)/(1.0-r)));
-  if(R_IsNA(r))
+  if(r != r)//r is NaN
     r = 0.0;
   
   return r;
