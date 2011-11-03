@@ -2238,11 +2238,162 @@ time <- system.time(rnorm(1000))
 tiem
 time
 time[3]
-## need to be in correct dir to be able to compile the cpp files!#
- setwd("/Users/rubendezeure/Documents/studies/hs_2011/semester_paper/skeleton")#
-## in my case on laptop#
-source('prepareruntime.r') ## get everything loaded and compiled
-skeleton(
-)
-estSkel
-estSkel2
+setwd("/Users/rubendezeure/Documents/studies/hs_2011/semester_paper/skeleton")
+source('prepareruntime.r')#
+en <- c(3)#
+p <- c(50,100,500,1000)#
+alpha <- 0.01#
+nrep <- 5#
+#
+timecpp <- matrix(numeric(length(en)*length(p)),length(en),length(p))#
+#
+for (i in 1:length(en)){#
+  for (j in 1:length(p)){#
+    cat('p=',p[j],' en=',en[i])#
+    for (k in 1:nrep){#
+      tmp <- makeGraph(p[j], en[i], seed = k) ## can take a while :/#
+      timecpp[i,j] <- estSkeltime(tmp$corMat, alpha)/nrep#
+      ## divide by nrep so we get averages#
+    }#
+  }#
+}#
+#
+timecpp#
+## for inverse thing en = 3 time is 0.6668#
+## for solve system thing en = 3 time is 0.4698
+source('prepareruntime.r')#
+en <- c(3)#
+p <- c(50,100,500,1000)#
+alpha <- 0.01#
+nrep <- 5#
+#
+timecpp2 <- matrix(numeric(length(en)*length(p)),length(en),length(p))#
+#
+for (i in 1:length(en)){#
+  for (j in 1:length(p)){#
+    cat('p=',p[j],' en=',en[i])#
+    for (k in 1:nrep){#
+      tmp <- makeGraph(p[j], en[i], seed = k) ## can take a while :/#
+      timecpp2[i,j] <- estSkeltime(tmp$corMat, alpha)/nrep#
+      ## divide by nrep so we get averages#
+    }#
+  }#
+}#
+#
+timecpp2#
+## for inverse thing en = 3 time is 0.6668#
+## for solve system thing en = 3 time is 0.4698
+timecpp2/timecpp
+source('prepareruntime.r')#
+en <- c(5)#
+p <- c(50,100,500)#
+alpha <- 0.01#
+nrep <- 5#
+#
+timecpp2 <- matrix(numeric(length(en)*length(p)),length(en),length(p))#
+#
+for (i in 1:length(en)){#
+  for (j in 1:length(p)){#
+    cat('p=',p[j],' en=',en[i])#
+    for (k in 1:nrep){#
+      tmp <- makeGraph(p[j], en[i], seed = k) ## can take a while :/#
+      timecpp2[i,j] <- estSkeltime(tmp$corMat, alpha)/nrep#
+      ## divide by nrep so we get averages#
+    }#
+  }#
+}#
+#
+timecpp2#
+## for inverse thing en = 3 time is 0.6668#
+## for solve system thing en = 3 time is 0.4698
+source('prepareruntime.r')#
+en <- c(5)#
+p <- c(50,100,500)#
+alpha <- 0.01#
+nrep <- 5#
+#
+timecpp <- matrix(numeric(length(en)*length(p)),length(en),length(p))#
+#
+for (i in 1:length(en)){#
+  for (j in 1:length(p)){#
+    cat('p=',p[j],' en=',en[i])#
+    for (k in 1:nrep){#
+      tmp <- makeGraph(p[j], en[i], seed = k) ## can take a while :/#
+      timecpp[i,j] <- estSkeltime(tmp$corMat, alpha)/nrep#
+      ## divide by nrep so we get averages#
+    }#
+  }#
+}#
+#
+timecpp#
+## for inverse thing en = 3 time is 0.6668#
+## for solve system thing en = 3 time is 0.4698
+timecpp2/timecpp
+source('prepareruntime.r')#
+en <- c(10)#
+p <- c(50,100,500)#
+alpha <- 0.01#
+nrep <- 5#
+#
+timecpp <- matrix(numeric(length(en)*length(p)),length(en),length(p))#
+#
+for (i in 1:length(en)){#
+  for (j in 1:length(p)){#
+    cat('p=',p[j],' en=',en[i])#
+    for (k in 1:nrep){#
+      tmp <- makeGraph(p[j], en[i], seed = k) ## can take a while :/#
+      timecpp[i,j] <- estSkeltime(tmp$corMat, alpha)/nrep#
+      ## divide by nrep so we get averages#
+    }#
+  }#
+}#
+#
+timecpp#
+## for inverse thing en = 3 time is 0.6668#
+## for solve system thing en = 3 time is 0.4698
+source('prepareruntime.r')#
+en <- c(10)#
+p <- c(50,100,500)#
+alpha <- 0.01#
+nrep <- 5#
+#
+timecpp2 <- matrix(numeric(length(en)*length(p)),length(en),length(p))#
+#
+for (i in 1:length(en)){#
+  for (j in 1:length(p)){#
+    cat('p=',p[j],' en=',en[i])#
+    for (k in 1:nrep){#
+      tmp <- makeGraph(p[j], en[i], seed = k) ## can take a while :/#
+      timecpp2[i,j] <- estSkeltime(tmp$corMat, alpha)/nrep#
+      ## divide by nrep so we get averages#
+    }#
+  }#
+}#
+#
+timecpp2#
+## for inverse thing en = 3 time is 0.6668#
+## for solve system thing en = 3 time is 0.4698
+timecpp2
+timecpp
+source('prepareruntime.r')#
+en <- c(10)#
+p <- c(50,100,500,1000)#
+alpha <- 0.01#
+nrep <- 5#
+#
+timecpp2 <- matrix(numeric(length(en)*length(p)),length(en),length(p))#
+#
+for (i in 1:length(en)){#
+  for (j in 1:length(p)){#
+    cat('p=',p[j],' en=',en[i])#
+    for (k in 1:nrep){#
+      tmp <- makeGraph(p[j], en[i], seed = k) ## can take a while :/#
+      timecpp2[i,j] <- estSkeltime(tmp$corMat, alpha)/nrep#
+      ## divide by nrep so we get averages#
+    }#
+  }#
+}#
+#
+timecpp2#
+## for inverse thing en = 3 time is 0.6668#
+## for solve system thing en = 3 time is 0.4698
