@@ -368,6 +368,8 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
       arma::mat sub = arma::submat(C,rows.begin(),rows.end(),cols.begin(),cols.end());
 
       arma::mat PM;
+      //arma::mat rhs;
+      //rhs.eye(sub.n_cols,2);//we only need the first 2 columns of the inverse
       
       try
 	{
@@ -376,7 +378,7 @@ double pcorOrder(int i,int j,std::vector<int> k,NumericMatrix Corr)
 	  //inverse can be done faster if the matrix is a positive definite symmetric matrix
 	  //we specify this so: inv( sympd(sub) )
 	  PM = arma::inv(arma::sympd(sub));
-	  //PM = arma::inv(sub); // older version
+	  //PM = arma::solve(arma::sympd(sub),rhs);
 	}
       catch(runtime_error re)
 	{
