@@ -7,7 +7,7 @@ en <- c(3,5)
 ##p <- c(50,100,500,1000,5000)
 p <- c(50,100,500,1000,5000)
 ##alpha <- 0.01
-alpha <- 0.05
+alpha <- 0.01
 nrep <- 5
 
 ## for each combination of en and p do 5 replicates (if p=5000 takes too long, just drop it)
