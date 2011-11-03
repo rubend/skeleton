@@ -119,4 +119,6 @@ for (int ord = 0; ord <= m_max; ++ord)
       }
   }
 
+//seems like the inversion takes as long as the submat making out of tests
+
 return wrap(convertToLogical(G,p)); // return graph matrix, in later stage return a more complete object
