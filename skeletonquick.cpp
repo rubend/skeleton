@@ -43,24 +43,6 @@ int iter =0;
 for (int ord = 0; ord <= m_max; ++ord)
   //additional check for if any connections are left might be useful, especially if mmax is huge
   {
-    //cout << "ord = " << ord << endl;
-    //faster alternative: look in graph to find a node with more neighbours than ord, (if you find one --> quit)
-    //ALTERNATIVE: keep track of number of neighbours each node has, would cost more memory (a vector of the number of nodes) but cost less to search each iteration!
-    //mark -1 the nodes that are already not worth visiting anymore --> change way of picking next row!
-    //if(ord > getMaxConnectionsLeft(G,p))
-    //if(!graphContainsNodeWithMoreNeighbours(G,p,ord))
-      // {
-      // 	//our automatic stopping condition
-      // 	cout <<" Iteration stopped at ord = " << ord << endl;
-	
-      // 	break;
-      // }
-    //is done in getrowwithenoughconnections!
-    
-    //look for next row with connections then iterate over the remaining connections
-    //alternative: save all connections explicitly in double array and loop over those.
-    
-    //row = 0; // reset to zero
     
     //this method tries to find a row with enough connections (>=ord) if there doesn't exist any --> we stop calculations
     row = 0;
