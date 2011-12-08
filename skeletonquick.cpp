@@ -16,6 +16,10 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+/**
+ * As you can observe there is no main function nothing in this code, reason is to make it perfectly suitable/easy to compile it using the inline function in R.
+ * How to do this see README file.
+ */
 int p = as<int>(pt);
 double alpha = as<double>(alphat);
 int m_max = as<int>(m_maxt);
