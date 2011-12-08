@@ -1,4 +1,3 @@
-// now this main will be implemented as the skeleton function! :p
 /**
  *Copyright (C) 2011  Ruben Dezeure
  *Contact: dezeurer@student.ethz.ch
