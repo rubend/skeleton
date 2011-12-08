@@ -1,4 +1,4 @@
-## makefile not up to date and not working
+## makefile not up to date and not working yet! Also not a priority now.
 ## TESTING PHASE
 
 ## comment this out if you need a different version of R, 
