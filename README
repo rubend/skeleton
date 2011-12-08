@@ -1,6 +1,16 @@
 README file
 -----------
-The easiest way to compile & run this code is using the inline library in R.
+This code is of a semester project supervised by Markus Kalisch at the ETH Zurich.
+It's a reimplementation of the critical part of an R algorithm for causal inference in c++.
+Speedups of 100x to 300x were achieved in day to day (realistic) testcases.
+For smaller problem sets speedups of around 50x are achieved.
+
+Variable, function names & buildup of the code were done to resemble the R implementation. The whole idea was that the original author of the R code would require minimal time to understand it.
+This, however, might make it more difficult for 3rd parties to read it.
+
+Run
+---
+The easiest (and currently only supported) way to compile & run this code is using the inline library in R.
 The steps:
     .	setwd($directory-with-source-files$)
     .	load library(inline) library(pcalg)
@@ -12,7 +22,7 @@ See also the test file prepareruntime.r.
 
 Compilation outside of R:
 -------------------------
-not supported yet, because of issues with the makefile
+not supported yet
 
 Test runs
 ---------
