@@ -1,7 +1,7 @@
 README file
 -----------
 This code is of a semester project supervised by Markus Kalisch at the ETH Zurich.
-It's a reimplementation of the critical part of an R algorithm for causal inference in c++.
+It's a reimplementation of the critical part of an R algorithm for causal inference in c++. (skeleton part of the pcalg algorithm)
 Speedups of 100x to 300x were achieved in day to day (realistic) testcases.
 For smaller problem sets speedups of around 50x are achieved.
 
