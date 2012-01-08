@@ -1,4 +1,4 @@
-setwd("/Users/rubendezeure/Documents/studies/hs_2011/semester_paper/skeleton")
+#setwd("/Users/rubendezeure/Documents/studies/hs_2011/semester_paper/skeleton")
 source('prepareruntime.r') ## get everything loaded and compiled
 
 #debug test cases

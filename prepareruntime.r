@@ -9,7 +9,7 @@ library(inline)
 #settings$env$PKG_LIBS <- paste('-fopenmp -lgomp', settings$env$PKG_LIBS)
 ##then still have to add argument setting=settings in the cxxfunction call
 
-funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric",nt="long"),body=paste(readLines("skeletonquick.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),collapse="\n"),plugin="RcppArmadillo")
+funskeleton <- cxxfunction(signature(pt="integer",alphat="numeric",m_maxt="integer",C="numeric",nt="numeric"),body=paste(readLines("skeletonquick.cpp"),collapse="\n"),includes=paste(readLines("graphfuncts.cpp"),collapse="\n"),plugin="RcppArmadillo")
 
 ## NOTE: Usually, we would ESTIMATE the correlation matrix; but since we are
 ## only interested in the runtime performance, we can use the true correlation

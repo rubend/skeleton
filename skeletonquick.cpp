@@ -24,7 +24,7 @@ int p = as<int>(pt);
 double alpha = as<double>(alphat);
 int m_max = as<int>(m_maxt);
 NumericMatrix Corr(C);
-long n = as<long>(nt);
+double n = as<double>(nt);
   
 bool G[p*p];// only store upper triangle? -> store as vector?
   

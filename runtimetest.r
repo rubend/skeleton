@@ -5,7 +5,7 @@ source('prepareruntime.r') ## get everything loaded and compiled
 ## testing runtimes in a structured way
 en <- c(3,5)
 ##p <- c(50,100,500,1000,5000)
-p <- c(50,100,500,1000,5000)
+p <- c(50,100,500,1000)
 ##alpha <- 0.01
 alpha <- 0.01
 nrep <- 5
